@@ -1,0 +1,14 @@
+
+> yalla@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.10.83:3000
+- Environments: .env.local
+✓ Ready in 766ms
+
+ GET /login 200 in 1045ms (next.js: 488ms, proxy.ts: 319ms, application-code: 238ms)
+ GET /signup 200 in 365ms (next.js: 317ms, proxy.ts: 7ms, application-code: 41ms)
+ GET /trips 307 in 606ms (next.js: 511ms, proxy.ts: 5ms, application-code: 90ms)
+ GET /login 200 in 48ms (next.js: 5ms, proxy.ts: 5ms, application-code: 38ms)
