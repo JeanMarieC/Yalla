@@ -25,6 +25,8 @@ interface TripViewProps {
   city?: string;
   title?: string;
   actions?: React.ReactNode;
+  /** Real drive geometry (road-trip mode) drawn instead of straight legs. */
+  routeLine?: [number, number][];
 }
 
 export default function TripView({
@@ -33,6 +35,7 @@ export default function TripView({
   city,
   title = "Your day",
   actions,
+  routeLine,
 }: TripViewProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [pulseOn, setPulseOn] = useState(false);
@@ -79,6 +82,7 @@ export default function TripView({
           onSelectPoint={setSelected}
           showRoute={!pulseOn}
           variant={pulseOn ? "event" : "stop"}
+          routeLine={pulseOn ? undefined : routeLine}
         />
       </div>
 

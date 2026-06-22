@@ -40,16 +40,7 @@ export default function VibePicker({
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <div className="w-full max-w-xl">
-        <header className="mb-10 text-center sm:text-left">
-          <h1 className="text-5xl font-semibold tracking-tight">Yalla</h1>
-          <p className="mt-3 text-lg leading-relaxed text-zinc-500">
-            Describe a vibe. Get a ready-to-go day.
-          </p>
-        </header>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="vibe"
@@ -122,9 +113,7 @@ export default function VibePicker({
               Nothing matched that vibe yet — try another mood or city.
             </p>
           )}
-        </form>
-      </div>
-    </div>
+    </form>
   );
 }
 

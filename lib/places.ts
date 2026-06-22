@@ -89,6 +89,35 @@ export async function findPlacesNearby(
   return (data ?? []) as NearbyMatch[];
 }
 
+/** A place inside the route corridor, with its progress along the route (0..1). */
+export interface RouteMatch extends VibeMatch {
+  progress: number;
+}
+
+/**
+ * Phase 10 — find vibe-matched places within a corridor around a driving route.
+ * @param routeGeoJSON a GeoJSON LineString geometry string (from getDrivingRoute)
+ */
+export async function findPlacesAlongRoute(
+  text: string,
+  routeGeoJSON: string,
+  corridorMeters = 2000,
+  count = 30,
+  client: SupabaseClient = supabaseAdmin(),
+): Promise<RouteMatch[]> {
+  const queryEmbedding = await embed(text, "RETRIEVAL_QUERY");
+  const { data, error } = await client.rpc("match_places_along_route", {
+    query_embedding: queryEmbedding,
+    route_geojson: routeGeoJSON,
+    corridor_meters: corridorMeters,
+    match_count: count,
+  });
+  if (error) {
+    throw new Error(`findPlacesAlongRoute: failed — ${error.message}`);
+  }
+  return (data ?? []) as RouteMatch[];
+}
+
 // ===========================================================================
 // Phase 3 — Vibe matching pipeline
 // ===========================================================================

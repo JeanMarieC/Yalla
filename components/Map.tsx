@@ -19,6 +19,8 @@ interface MapProps {
   onSelectPoint: (index: number) => void;
   showRoute?: boolean;
   variant?: "stop" | "event";
+  /** Real route geometry (e.g. a driving route) to draw instead of straight legs. */
+  routeLine?: [number, number][];
 }
 
 // Numbered itinerary pin (monochrome).
@@ -53,6 +55,7 @@ export default function Map({
   onSelectPoint,
   showRoute = true,
   variant = "stop",
+  routeLine,
 }: MapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -76,13 +79,14 @@ export default function Map({
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
 
     map.on("load", () => {
-      if (showRoute && coords.length > 1) {
+      const lineCoords = routeLine && routeLine.length > 1 ? routeLine : coords;
+      if (showRoute && lineCoords.length > 1) {
         map.addSource("route", {
           type: "geojson",
           data: {
             type: "Feature",
             properties: {},
-            geometry: { type: "LineString", coordinates: coords },
+            geometry: { type: "LineString", coordinates: lineCoords },
           },
         });
         map.addLayer({
@@ -119,7 +123,7 @@ export default function Map({
       map.remove();
       mapRef.current = null;
     };
-  }, [points, token, onSelectPoint, showRoute, variant]);
+  }, [points, token, onSelectPoint, showRoute, variant, routeLine]);
 
   // Highlight + fly to the selected point.
   useEffect(() => {

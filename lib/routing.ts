@@ -83,6 +83,40 @@ export async function getLegDurations(
   return legs;
 }
 
+/**
+ * The driving route between two points (Mapbox Directions). Returns the road
+ * geometry (for drawing + the PostGIS corridor query) plus total drive time.
+ */
+export async function getDrivingRoute(
+  start: LatLng,
+  end: LatLng,
+): Promise<{
+  coordinates: [number, number][];
+  durationSec: number;
+  distanceMeters: number;
+}> {
+  const coords = `${start.lng},${start.lat};${end.lng},${end.lat}`;
+  const url =
+    `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}` +
+    `?geometries=geojson&overview=full&access_token=${mapboxToken()}`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Mapbox Directions API ${res.status}: ${await res.text()}`);
+  }
+  const data = (await res.json()) as {
+    routes?: { geometry: { coordinates: [number, number][] }; duration: number; distance: number }[];
+  };
+  const route = data.routes?.[0];
+  if (!route) throw new Error("No driving route found between those points.");
+
+  return {
+    coordinates: route.geometry.coordinates,
+    durationSec: route.duration,
+    distanceMeters: route.distance,
+  };
+}
+
 // --- Straight-line fallback (only used when Mapbox returns null) -----------
 
 const SPEED_MPS: Record<TravelProfile, number> = {

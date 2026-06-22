@@ -237,7 +237,7 @@ function buildSchedule(
   return { stops, endMin };
 }
 
-function durationForPlace(p: RankedPlace): number {
+export function durationForPlace(p: RankedPlace): number {
   let best = 0;
   let found = false;
   for (const t of p.place_types) {
