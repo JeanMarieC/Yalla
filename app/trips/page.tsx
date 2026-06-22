@@ -25,11 +25,11 @@ export default async function TripsPage() {
         <h1 className="text-3xl font-semibold tracking-tight">My Trips</h1>
 
         {!trips || trips.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-zinc-200 p-10 text-center">
-            <p className="text-zinc-500">No saved trips yet.</p>
+          <div className="mt-10 rounded-2xl border border-dashed border-stone-200 p-10 text-center">
+            <p className="text-stone-500">No saved trips yet.</p>
             <Link
               href="/"
-              className="mt-4 inline-block rounded-full bg-zinc-900 px-5 py-2.5 text-sm text-white transition hover:bg-zinc-700"
+              className="mt-4 inline-block rounded-full bg-stone-900 px-5 py-2.5 text-sm text-white transition hover:bg-stone-700"
             >
               Plan a day
             </Link>
@@ -40,10 +40,10 @@ export default async function TripsPage() {
               <li key={trip.id}>
                 <Link
                   href={`/trip/${trip.id}`}
-                  className="block rounded-2xl border border-zinc-200 px-5 py-4 transition hover:bg-zinc-50"
+                  className="block rounded-2xl border border-stone-200 px-5 py-4 transition hover:bg-stone-50"
                 >
-                  <p className="font-medium text-zinc-900">{trip.title}</p>
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="font-medium text-stone-900">{trip.title}</p>
+                  <p className="mt-1 text-sm text-stone-500">
                     {trip.city ? `${trip.city} · ` : ""}
                     {new Date(trip.created_at).toLocaleDateString()}
                   </p>

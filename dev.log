@@ -9,3 +9,4 @@
 ✓ Ready in 684ms
 
  GET / 200 in 593ms (next.js: 131ms, proxy.ts: 217ms, application-code: 245ms)
+✓ Compiled in 55ms

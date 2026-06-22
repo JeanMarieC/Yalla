@@ -61,8 +61,8 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-zinc-200 p-5">
-      <p className="text-sm font-medium text-zinc-700">
+    <form onSubmit={submit} className="rounded-2xl border border-stone-200 p-5">
+      <p className="text-sm font-medium text-stone-700">
         {existing ? "Your review" : "Leave a review"}
       </p>
 
@@ -76,7 +76,7 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
             onMouseLeave={() => setHover(0)}
             aria-label={`${n} star${n > 1 ? "s" : ""}`}
             className={`text-2xl leading-none transition ${
-              n <= (hover || rating) ? "text-amber-400" : "text-zinc-300"
+              n <= (hover || rating) ? "text-amber-400" : "text-stone-300"
             }`}
           >
             ★
@@ -89,14 +89,14 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
         onChange={(e) => setBody(e.target.value)}
         rows={3}
         placeholder="What's it really like? (optional)"
-        className="mt-3 w-full resize-none rounded-xl border border-zinc-200 px-4 py-2.5 outline-none transition focus:border-zinc-400"
+        className="mt-3 w-full resize-none rounded-xl border border-stone-200 px-4 py-2.5 outline-none transition focus:border-stone-400"
       />
 
       <div className="mt-3 flex items-center gap-3">
         <button
           type="submit"
           disabled={busy}
-          className="rounded-full bg-zinc-900 px-5 py-2 text-sm text-white transition hover:bg-zinc-700 disabled:opacity-40"
+          className="rounded-full bg-stone-900 px-5 py-2 text-sm text-white transition hover:bg-stone-700 disabled:opacity-40"
         >
           {busy ? "Saving…" : existing ? "Update review" : "Post review"}
         </button>
@@ -105,7 +105,7 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
             type="button"
             onClick={remove}
             disabled={busy}
-            className="text-sm text-zinc-500 underline transition hover:text-zinc-800"
+            className="text-sm text-stone-500 underline transition hover:text-stone-800"
           >
             Remove
           </button>

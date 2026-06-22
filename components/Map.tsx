@@ -25,8 +25,8 @@ interface MapProps {
 
 // Numbered itinerary pin (monochrome).
 const STOP_BASE =
-  "flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-xs font-semibold text-white shadow-md transition-transform duration-200";
-const STOP_SELECTED = "scale-125 ring-4 ring-zinc-900/15";
+  "flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-stone-900 text-xs font-semibold text-white shadow-md transition-transform duration-200";
+const STOP_SELECTED = "scale-125 ring-4 ring-stone-900/15";
 
 // Glowing "alive" event pin.
 const EVENT_BASE =
@@ -141,7 +141,7 @@ export default function Map({
 
   if (!token) {
     return (
-      <div className="flex h-full items-center justify-center bg-zinc-100 p-6 text-center text-sm text-zinc-500">
+      <div className="flex h-full items-center justify-center bg-stone-100 p-6 text-center text-sm text-stone-500">
         Map unavailable — set NEXT_PUBLIC_MAPBOX_TOKEN in .env.local.
       </div>
     );

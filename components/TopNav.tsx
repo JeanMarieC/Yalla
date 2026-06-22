@@ -20,30 +20,30 @@ export default function TopNav() {
   }
 
   return (
-    <nav className="flex items-center justify-end gap-2 px-6 py-4 text-sm">
+    <nav className="flex flex-wrap items-center justify-end gap-x-1 gap-y-2 px-4 py-4 text-sm sm:px-6">
       {loading ? null : user ? (
         <>
           <Link
             href="/place/new"
-            className="rounded-full px-4 py-2 transition hover:bg-zinc-100"
+            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
           >
             Add place
           </Link>
           <Link
             href="/events/new"
-            className="rounded-full px-4 py-2 transition hover:bg-zinc-100"
+            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
           >
             Add event
           </Link>
           <Link
             href="/trips"
-            className="rounded-full px-4 py-2 transition hover:bg-zinc-100"
+            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
           >
             My Trips
           </Link>
           <button
             onClick={logout}
-            className="rounded-full px-4 py-2 transition hover:bg-zinc-100"
+            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
           >
             Log out
           </button>
@@ -52,13 +52,13 @@ export default function TopNav() {
         <>
           <Link
             href="/login"
-            className="rounded-full px-4 py-2 transition hover:bg-zinc-100"
+            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
           >
             Log in
           </Link>
           <Link
             href="/signup"
-            className="rounded-full bg-zinc-900 px-4 py-2 text-white transition hover:bg-zinc-700"
+            className="rounded-full bg-stone-900 px-4 py-2 text-white transition hover:bg-stone-700"
           >
             Sign up
           </Link>

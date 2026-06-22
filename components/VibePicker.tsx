@@ -44,7 +44,7 @@ export default function VibePicker({
           <div>
             <label
               htmlFor="vibe"
-              className="mb-2 block text-sm font-medium text-zinc-600"
+              className="mb-2 block text-sm font-medium text-stone-600"
             >
               What&apos;s the mood?
             </label>
@@ -55,7 +55,7 @@ export default function VibePicker({
               rows={3}
               autoFocus
               placeholder="moody coastal, vinyl bars, hidden bakeries…"
-              className="w-full resize-none rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-lg leading-relaxed shadow-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200"
+              className="w-full resize-none rounded-2xl border border-stone-200 bg-white px-5 py-4 text-lg leading-relaxed shadow-sm outline-none transition focus:border-stone-400 focus:ring-2 focus:ring-stone-200"
             />
           </div>
 
@@ -64,7 +64,7 @@ export default function VibePicker({
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 outline-none transition focus:border-zinc-400"
+                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
               >
                 <option value="">Anywhere</option>
                 {CITIES.map((c) => (
@@ -80,7 +80,7 @@ export default function VibePicker({
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 outline-none transition focus:border-zinc-400"
+                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
               />
             </Field>
 
@@ -88,7 +88,7 @@ export default function VibePicker({
               <select
                 value={timeBudget}
                 onChange={(e) => setTimeBudget(Number(e.target.value))}
-                className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 outline-none transition focus:border-zinc-400"
+                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
               >
                 {BUDGETS.map((h) => (
                   <option key={h} value={h}>
@@ -102,14 +102,14 @@ export default function VibePicker({
           <button
             type="submit"
             disabled={loading || !vibe.trim()}
-            className="w-full rounded-full bg-zinc-900 px-6 py-4 text-base font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="w-full rounded-full bg-stone-900 px-6 py-4 text-base font-medium text-white transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {loading ? "Planning your day…" : "Plan my day"}
           </button>
 
           {error && <p className="text-center text-sm text-red-500">{error}</p>}
           {noResults && !error && (
-            <p className="text-center text-sm text-zinc-500">
+            <p className="text-center text-sm text-stone-500">
               Nothing matched that vibe yet — try another mood or city.
             </p>
           )}
@@ -120,7 +120,7 @@ export default function VibePicker({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-zinc-600">{label}</span>
+      <span className="mb-2 block text-sm font-medium text-stone-600">{label}</span>
       {children}
     </label>
   );

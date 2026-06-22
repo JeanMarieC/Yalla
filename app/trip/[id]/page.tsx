@@ -36,13 +36,13 @@ export default async function TripPage({
         <>
           <Link
             href={`/lobby/${id}`}
-            className="rounded-full bg-zinc-900 px-3 py-1.5 text-sm text-white transition hover:bg-zinc-700"
+            className="rounded-full bg-stone-900 px-3 py-1.5 text-sm text-white transition hover:bg-stone-700"
           >
             Open lobby
           </Link>
           <Link
             href="/trips"
-            className="rounded-full border border-zinc-200 bg-white/80 px-3 py-1.5 text-sm transition hover:bg-zinc-50"
+            className="rounded-full border border-stone-200 bg-white/80 px-3 py-1.5 text-sm transition hover:bg-stone-50"
           >
             My Trips
           </Link>

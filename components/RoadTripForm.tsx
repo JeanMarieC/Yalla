@@ -47,12 +47,12 @@ export default function RoadTripForm({ onSubmit, loading, error }: RoadTripFormP
   }
 
   const input =
-    "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 outline-none transition focus:border-zinc-400";
+    "w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 outline-none transition focus:border-stone-400";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className="mb-2 block text-sm font-medium text-zinc-600">The vibe of the drive</label>
+        <label className="mb-2 block text-sm font-medium text-stone-600">The vibe of the drive</label>
         <textarea
           value={vibe}
           onChange={(e) => setVibe(e.target.value)}
@@ -63,29 +63,29 @@ export default function RoadTripForm({ onSubmit, loading, error }: RoadTripFormP
         />
       </div>
 
-      <fieldset className="rounded-2xl border border-zinc-200 p-4">
-        <legend className="px-2 text-sm font-medium text-zinc-600">Start from</legend>
+      <fieldset className="rounded-2xl border border-stone-200 p-4">
+        <legend className="px-2 text-sm font-medium text-stone-600">Start from</legend>
         <div className="grid grid-cols-2 gap-3">
           <input required type="number" step="any" placeholder="Latitude" value={startLat} onChange={(e) => setStartLat(e.target.value)} className={input} />
           <input required type="number" step="any" placeholder="Longitude" value={startLng} onChange={(e) => setStartLng(e.target.value)} className={input} />
         </div>
       </fieldset>
 
-      <fieldset className="rounded-2xl border border-zinc-200 p-4">
-        <legend className="px-2 text-sm font-medium text-zinc-600">The event (your anchor)</legend>
+      <fieldset className="rounded-2xl border border-stone-200 p-4">
+        <legend className="px-2 text-sm font-medium text-stone-600">The event (your anchor)</legend>
         <input required placeholder="Event name" value={eventName} onChange={(e) => setEventName(e.target.value)} className={`${input} mb-3`} />
         <div className="grid grid-cols-2 gap-3">
           <input required type="number" step="any" placeholder="Latitude" value={eventLat} onChange={(e) => setEventLat(e.target.value)} className={input} />
           <input required type="number" step="any" placeholder="Longitude" value={eventLng} onChange={(e) => setEventLng(e.target.value)} className={input} />
         </div>
         <label className="mt-3 block">
-          <span className="mb-1 block text-sm text-zinc-600">Arrive by</span>
+          <span className="mb-1 block text-sm text-stone-600">Arrive by</span>
           <input required type="datetime-local" value={eventTime} onChange={(e) => setEventTime(e.target.value)} className={input} />
         </label>
       </fieldset>
 
       <label className="block">
-        <span className="mb-1 block text-sm text-zinc-600">Max trip length</span>
+        <span className="mb-1 block text-sm text-stone-600">Max trip length</span>
         <select value={budgetHours} onChange={(e) => setBudgetHours(Number(e.target.value))} className={input}>
           {BUDGETS.map((h) => (
             <option key={h} value={h}>{h} hours</option>
@@ -96,7 +96,7 @@ export default function RoadTripForm({ onSubmit, loading, error }: RoadTripFormP
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-zinc-900 px-6 py-4 text-base font-medium text-white transition hover:bg-zinc-700 disabled:opacity-40"
+        className="w-full rounded-full bg-stone-900 px-6 py-4 text-base font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
       >
         {loading ? "Planning the drive…" : "Plan the road trip"}
       </button>

@@ -27,25 +27,25 @@ export default function ItineraryList({
               type="button"
               onClick={() => onSelect?.(i)}
               className={`flex w-full gap-4 rounded-2xl px-4 py-4 text-left transition ${
-                selected ? "bg-zinc-100" : "hover:bg-zinc-50"
+                selected ? "bg-stone-100" : "hover:bg-stone-50"
               }`}
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-xs font-semibold text-white">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-stone-900 text-xs font-semibold text-white">
                 {i + 1}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline justify-between gap-3">
-                  <span className="truncate font-medium text-zinc-900">
+                  <span className="truncate font-medium text-stone-900">
                     {stop.place.name}
                   </span>
-                  <span className="shrink-0 text-sm tabular-nums text-zinc-400">
+                  <span className="shrink-0 text-sm tabular-nums text-stone-400">
                     {stop.arrivalTime}
                   </span>
                 </span>
-                <span className="mt-0.5 block truncate text-sm text-zinc-500">
+                <span className="mt-0.5 block truncate text-sm text-stone-500">
                   {stop.place.place_types.join(" · ")}
                 </span>
-                <span className="mt-1.5 block text-sm leading-relaxed text-zinc-600">
+                <span className="mt-1.5 block text-sm leading-relaxed text-stone-600">
                   {stop.whyItFits}
                 </span>
               </span>

@@ -50,7 +50,7 @@ export default function SaveTripButton({
       onClick={save}
       disabled={saving}
       title={error ?? undefined}
-      className="rounded-full bg-zinc-900 px-3 py-1.5 text-sm text-white transition hover:bg-zinc-700 disabled:opacity-40"
+      className="rounded-full bg-stone-900 px-3 py-1.5 text-sm text-white transition hover:bg-stone-700 disabled:opacity-40"
     >
       {saving ? "Saving…" : error ? "Retry save" : "Save trip"}
     </button>

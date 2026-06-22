@@ -80,7 +80,7 @@ export default function Home() {
             )}
             <button
               onClick={() => setItinerary(null)}
-              className="rounded-full border border-zinc-200 bg-white/80 px-3 py-1.5 text-sm transition hover:bg-zinc-50"
+              className="rounded-full border border-stone-200 bg-white/80 px-3 py-1.5 text-sm transition hover:bg-stone-50"
             >
               New plan
             </button>
@@ -97,16 +97,16 @@ export default function Home() {
         <div className="w-full max-w-xl">
           <header className="mb-8">
             <h1 className="text-5xl font-semibold tracking-tight">Yalla</h1>
-            <p className="mt-3 text-lg leading-relaxed text-zinc-500">
+            <p className="mt-3 text-lg leading-relaxed text-stone-500">
               Describe a vibe. Get a ready-to-go day.
             </p>
           </header>
 
-          <div className="mb-8 inline-flex rounded-full bg-zinc-100 p-1 text-sm">
+          <div className="mb-8 inline-flex rounded-full bg-stone-100 p-1 text-sm">
             <button
               onClick={() => setMode("city")}
               className={`rounded-full px-4 py-1.5 transition ${
-                mode === "city" ? "bg-white shadow-sm" : "text-zinc-500"
+                mode === "city" ? "bg-white shadow-sm" : "text-stone-500"
               }`}
             >
               City day
@@ -114,7 +114,7 @@ export default function Home() {
             <button
               onClick={() => setMode("roadtrip")}
               className={`rounded-full px-4 py-1.5 transition ${
-                mode === "roadtrip" ? "bg-white shadow-sm" : "text-zinc-500"
+                mode === "roadtrip" ? "bg-white shadow-sm" : "text-stone-500"
               }`}
             >
               Road trip

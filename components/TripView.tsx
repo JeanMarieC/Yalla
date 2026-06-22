@@ -16,7 +16,7 @@ import type { MapPoint } from "@/components/Map";
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
-  loading: () => <div className="h-full w-full bg-zinc-100" />,
+  loading: () => <div className="h-full w-full bg-stone-100" />,
 });
 
 interface TripViewProps {
@@ -89,14 +89,14 @@ export default function TripView({
       {/* Loading / empty overlays for the Pulse. */}
       {pulseOn && pulseLoading && (
         <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
-          <span className="rounded-full bg-white/90 px-4 py-2 text-sm text-zinc-600 shadow">
+          <span className="rounded-full bg-white/90 px-4 py-2 text-sm text-stone-600 shadow">
             Reading the Pulse…
           </span>
         </div>
       )}
       {emptyPulse && (
         <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center px-6">
-          <span className="rounded-2xl bg-white/90 px-5 py-3 text-center text-sm text-zinc-600 shadow">
+          <span className="rounded-2xl bg-white/90 px-5 py-3 text-center text-sm text-stone-600 shadow">
             Nothing live this week for that vibe{city ? ` in ${city}` : ""}.
           </span>
         </div>
@@ -109,7 +109,7 @@ export default function TripView({
             <h1 className="text-xl font-semibold tracking-tight">
               {pulseOn ? "The Pulse" : title}
             </h1>
-            <p className="mt-1 truncate text-sm text-zinc-500">&ldquo;{vibe}&rdquo;</p>
+            <p className="mt-1 truncate text-sm text-stone-500">&ldquo;{vibe}&rdquo;</p>
           </div>
           <div className="flex shrink-0 items-center gap-2">{actions}</div>
         </header>
@@ -142,7 +142,7 @@ export default function TripView({
         className={`absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium shadow-lg transition ${
           pulseOn
             ? "bg-rose-600 text-white hover:bg-rose-500"
-            : "bg-white text-zinc-900 hover:bg-zinc-50"
+            : "bg-white text-stone-900 hover:bg-stone-50"
         }`}
       >
         <span className="relative flex h-2.5 w-2.5">

@@ -65,7 +65,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
         <h1 className="text-3xl font-semibold tracking-tight">
           {isSignup ? "Create your account" : "Welcome back"}
         </h1>
-        <p className="mt-2 text-zinc-500">
+        <p className="mt-2 text-stone-500">
           {isSignup ? "Save and revisit your days." : "Log in to find your saved trips."}
         </p>
 
@@ -77,7 +77,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             autoComplete="email"
-            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 outline-none transition focus:border-zinc-400"
+            className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 outline-none transition focus:border-stone-400"
           />
           <input
             type="password"
@@ -87,32 +87,32 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password (min 6 chars)"
             autoComplete={isSignup ? "new-password" : "current-password"}
-            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 outline-none transition focus:border-zinc-400"
+            className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 outline-none transition focus:border-stone-400"
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-zinc-900 px-6 py-3 font-medium text-white transition hover:bg-zinc-700 disabled:opacity-40"
+            className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
           >
             {loading ? "…" : isSignup ? "Sign up" : "Log in"}
           </button>
         </form>
 
         {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
-        {notice && <p className="mt-4 text-sm text-zinc-600">{notice}</p>}
+        {notice && <p className="mt-4 text-sm text-stone-600">{notice}</p>}
 
-        <p className="mt-8 text-sm text-zinc-500">
+        <p className="mt-8 text-sm text-stone-500">
           {isSignup ? (
             <>
               Already have an account?{" "}
-              <Link href="/login" className="font-medium text-zinc-900 underline">
+              <Link href="/login" className="font-medium text-stone-900 underline">
                 Log in
               </Link>
             </>
           ) : (
             <>
               New here?{" "}
-              <Link href="/signup" className="font-medium text-zinc-900 underline">
+              <Link href="/signup" className="font-medium text-stone-900 underline">
                 Sign up
               </Link>
             </>

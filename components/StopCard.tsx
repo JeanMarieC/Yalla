@@ -19,9 +19,9 @@ export default function StopCard({ stop, index, total, onClose }: StopCardProps)
 
   return (
     <div
-      className={`fixed z-20 bg-white shadow-2xl transition-transform duration-300 ease-out
+      className={`fixed z-20 max-h-[88dvh] overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-out
         inset-x-0 bottom-0 rounded-t-3xl
-        md:inset-y-0 md:left-auto md:right-0 md:w-[400px] md:rounded-none md:rounded-l-3xl
+        md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[400px] md:rounded-none md:rounded-l-3xl
         ${
           open
             ? "translate-y-0 md:translate-x-0"
@@ -30,20 +30,21 @@ export default function StopCard({ stop, index, total, onClose }: StopCardProps)
       aria-hidden={!open}
     >
       {stop && index != null && (
-        <div className="flex h-full flex-col p-6 md:p-8">
+        <div className="flex h-full flex-col p-6 pb-8 md:p-8">
+          <div className="mx-auto mb-4 h-1.5 w-10 shrink-0 rounded-full bg-stone-300 md:hidden" />
           <div className="mb-6 flex items-start justify-between gap-4">
             <span className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900 text-sm font-semibold text-white">
                 {index + 1}
               </span>
-              <span className="text-sm text-zinc-400">
+              <span className="text-sm text-stone-400">
                 Stop {index + 1} of {total}
               </span>
             </span>
             <button
               onClick={onClose}
               aria-label="Close"
-              className="rounded-full p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700"
+              className="rounded-full p-2 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6 6 18M6 6l12 12" />
@@ -52,24 +53,24 @@ export default function StopCard({ stop, index, total, onClose }: StopCardProps)
           </div>
 
           <h2 className="text-2xl font-semibold tracking-tight">{stop.place.name}</h2>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-stone-500">
             {stop.place.place_types.join(" · ")}
           </p>
 
           <dl className="mt-6 flex gap-8">
             <div>
-              <dt className="text-xs uppercase tracking-wide text-zinc-400">Arrive</dt>
+              <dt className="text-xs uppercase tracking-wide text-stone-400">Arrive</dt>
               <dd className="mt-1 text-lg font-medium tabular-nums">{stop.arrivalTime}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-zinc-400">Stay</dt>
+              <dt className="text-xs uppercase tracking-wide text-stone-400">Stay</dt>
               <dd className="mt-1 text-lg font-medium tabular-nums">
                 {stop.durationMinutes} min
               </dd>
             </div>
             {stop.travelToNextMinutes > 0 && (
               <div>
-                <dt className="text-xs uppercase tracking-wide text-zinc-400">To next</dt>
+                <dt className="text-xs uppercase tracking-wide text-stone-400">To next</dt>
                 <dd className="mt-1 text-lg font-medium tabular-nums">
                   {stop.travelToNextMinutes} min
                 </dd>
@@ -77,18 +78,18 @@ export default function StopCard({ stop, index, total, onClose }: StopCardProps)
             )}
           </dl>
 
-          <div className="mt-6 rounded-2xl bg-zinc-50 p-5">
-            <p className="text-xs uppercase tracking-wide text-zinc-400">Why it fits</p>
-            <p className="mt-2 leading-relaxed text-zinc-700">{stop.whyItFits}</p>
+          <div className="mt-6 rounded-2xl bg-stone-50 p-5">
+            <p className="text-xs uppercase tracking-wide text-stone-400">Why it fits</p>
+            <p className="mt-2 leading-relaxed text-stone-700">{stop.whyItFits}</p>
           </div>
 
-          <p className="mt-6 text-sm leading-relaxed text-zinc-500">
+          <p className="mt-6 text-sm leading-relaxed text-stone-500">
             {stop.place.description}
           </p>
 
           <Link
             href={`/place/${stop.place.id}`}
-            className="mt-6 inline-block text-sm font-medium text-zinc-900 underline"
+            className="mt-6 inline-block text-sm font-medium text-stone-900 underline"
           >
             Reviews &amp; details →
           </Link>
