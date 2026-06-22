@@ -9,12 +9,16 @@
     "lint": "eslint",
     "test:vibe": "tsx scripts/testVibe.ts",
     "seed:places": "tsx scripts/seedPlaces.ts",
+    "seed:events": "tsx scripts/seedEvents.ts",
     "test:places": "tsx scripts/testPlaces.ts",
     "test:match": "tsx scripts/testMatch.ts",
     "test:plan": "tsx scripts/testPlan.ts"
   },
   "dependencies": {
     "@google/genai": "^2.9.0",
+    "@langchain/core": "^1.2.0",
+    "@langchain/google-genai": "^2.2.0",
+    "@langchain/langgraph": "^1.4.4",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "mapbox-gl": "^3.25.0",

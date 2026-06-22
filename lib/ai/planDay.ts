@@ -6,9 +6,9 @@
 //   THE MODEL   — only writes the one-line "why it fits you" notes (language).
 // The model never decides what to visit, in what order, or at what time.
 
-import { GoogleGenAI, Type } from "@google/genai";
 import type { RankedPlace } from "../places";
 import { getTravelMatrix, type LatLng, type TravelProfile } from "../routing";
+import { generateWhyItFits } from "./whyItFits";
 
 export interface PlanDayOptions {
   /** The original vibe, so the why-it-fits lines can reference its feeling. */
@@ -143,7 +143,11 @@ export async function planDay(
   // THE ONLY MODEL STEP: write a short "why it fits you" line per final stop.
   const whyLines = await generateWhyItFits(
     options.vibe,
-    scheduled.map((s) => s.place),
+    scheduled.map((s) => ({
+      name: s.place.name,
+      tags: s.place.place_types,
+      description: s.place.description,
+    })),
   );
 
   return scheduled.map((s, i) => ({
@@ -277,70 +281,4 @@ function formatHM(min: number): string {
   const h = Math.floor(min / 60);
   const m = min % 60;
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-}
-
-// ===========================================================================
-// THE MODEL — language only (the "why it fits you" lines)
-// ===========================================================================
-
-/**
- * Ask Gemini for one short note per stop, referencing the vibe. JSON mode with
- * a fixed-length string array keeps it aligned to the stops. If anything goes
- * wrong, we fall back to a plain generated line — the model is never allowed to
- * break the (already-valid) itinerary.
- */
-async function generateWhyItFits(
-  vibe: string,
-  places: RankedPlace[],
-): Promise<string[]> {
-  const fallback = places.map(
-    (p) => `A ${p.place_types[0] ?? "spot"} that fits your "${vibe}" mood.`,
-  );
-
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || places.length === 0) return fallback;
-
-  try {
-    const ai = new GoogleGenAI({ apiKey });
-    const numbered = places
-      .map(
-        (p, i) =>
-          `${i + 1}. ${p.name} [${p.place_types.join(", ")}] — ${p.description}`,
-      )
-      .join("\n");
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents:
-        `Vibe: "${vibe}"\n\nStops in order:\n${numbered}\n\n` +
-        `Write one warm, specific "why this fits you" line per stop, in order.`,
-      config: {
-        systemInstruction:
-          "You write short second-person itinerary notes. Each line <= 20 words, " +
-          "references the vibe's feeling, no place name needed, no quotes.",
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: { type: Type.STRING },
-          minItems: String(places.length),
-          maxItems: String(places.length),
-        },
-        temperature: 0.7,
-      },
-    });
-
-    const text = response.text;
-    if (!text) return fallback;
-    const lines = JSON.parse(text);
-    if (
-      Array.isArray(lines) &&
-      lines.length === places.length &&
-      lines.every((l) => typeof l === "string")
-    ) {
-      return lines as string[];
-    }
-    return fallback;
-  } catch {
-    return fallback;
-  }
 }

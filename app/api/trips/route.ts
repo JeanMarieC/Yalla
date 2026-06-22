@@ -22,6 +22,8 @@ export async function POST(request: Request) {
   const vibe = String(body.vibe ?? "").trim();
   const city = body.city ? String(body.city).trim() : null;
   const itinerary = body.itinerary;
+  const startTime = body.startTime ? String(body.startTime) : "10:00";
+  const budgetHours = Number(body.timeBudget ?? 8);
 
   if (!vibe || !Array.isArray(itinerary) || itinerary.length === 0) {
     return NextResponse.json({ error: "Nothing to save." }, { status: 400 });
@@ -35,6 +37,8 @@ export async function POST(request: Request) {
       vibe,
       city,
       itinerary,
+      start_time: startTime,
+      budget_hours: Number.isFinite(budgetHours) ? budgetHours : 8,
     })
     .select("id")
     .single();

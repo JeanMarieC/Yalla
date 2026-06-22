@@ -11,12 +11,16 @@ interface SaveTripButtonProps {
   vibe: string;
   city: string;
   itinerary: ItineraryStop[];
+  startTime: string;
+  timeBudget: number;
 }
 
 export default function SaveTripButton({
   vibe,
   city,
   itinerary,
+  startTime,
+  timeBudget,
 }: SaveTripButtonProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -30,7 +34,7 @@ export default function SaveTripButton({
       const res = await fetch("/api/trips", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, vibe, city, itinerary }),
+        body: JSON.stringify({ title, vibe, city, itinerary, startTime, timeBudget }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Could not save.");

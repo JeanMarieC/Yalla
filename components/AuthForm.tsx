@@ -5,12 +5,14 @@
 // the middleware/server clients pick it up.
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase-browser";
 
 export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
       }
       // If email confirmation is OFF, we get a session immediately.
       if (data.session) {
-        router.push("/");
+        router.push(next);
         router.refresh();
         return;
       }
@@ -53,7 +55,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
       setLoading(false);
       return;
     }
-    router.push("/");
+    router.push(next);
     router.refresh();
   }
 

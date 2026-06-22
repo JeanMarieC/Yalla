@@ -43,6 +43,7 @@ export default function Home() {
       <TripView
         itinerary={itinerary}
         vibe={submitted.vibe}
+        city={submitted.city}
         actions={
           <>
             {user && (
@@ -50,6 +51,8 @@ export default function Home() {
                 vibe={submitted.vibe}
                 city={submitted.city}
                 itinerary={itinerary}
+                startTime={submitted.startTime}
+                timeBudget={submitted.timeBudget}
               />
             )}
             <button

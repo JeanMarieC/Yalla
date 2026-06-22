@@ -1,39 +1,69 @@
 "use client";
 
-// Phase 5 — The map. Mapbox GL canvas with custom sparse numbered pins and one
-// stylized route line. Pure presentation: it renders stops and reports taps;
-// it owns no itinerary logic. Client-only (mapbox-gl needs the browser).
+// Phase 5/7 — The map. Renders a list of points as either numbered itinerary
+// pins (with a route line) or glowing "live" event pins (no route). Pure
+// presentation: it draws points and reports taps; it owns no domain logic.
 
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import type { ItineraryStop } from "@/lib/ai/planDay";
 
-interface MapProps {
-  stops: ItineraryStop[];
-  selectedIndex: number | null;
-  onSelectStop: (index: number) => void;
+export interface MapPoint {
+  lng: number;
+  lat: number;
 }
 
-// Custom pin styling — written as full literal strings so Tailwind keeps them.
-const PIN_BASE =
-  "flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-xs font-semibold text-white shadow-md transition-transform duration-200";
-const PIN_SELECTED = "scale-125 ring-4 ring-zinc-900/15";
+interface MapProps {
+  points: MapPoint[];
+  selectedIndex: number | null;
+  onSelectPoint: (index: number) => void;
+  showRoute?: boolean;
+  variant?: "stop" | "event";
+}
 
-export default function Map({ stops, selectedIndex, onSelectStop }: MapProps) {
+// Numbered itinerary pin (monochrome).
+const STOP_BASE =
+  "flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-zinc-900 text-xs font-semibold text-white shadow-md transition-transform duration-200";
+const STOP_SELECTED = "scale-125 ring-4 ring-zinc-900/15";
+
+// Glowing "alive" event pin.
+const EVENT_BASE =
+  "relative inline-flex h-5 w-5 cursor-pointer items-center justify-center transition-transform duration-200";
+const EVENT_SELECTED = "scale-150";
+
+function makeStopEl(i: number) {
+  const el = document.createElement("button");
+  el.className = STOP_BASE;
+  el.textContent = String(i + 1);
+  return el;
+}
+
+function makeEventEl() {
+  const el = document.createElement("button");
+  el.className = EVENT_BASE;
+  el.innerHTML =
+    '<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75"></span>' +
+    '<span class="relative inline-flex h-3 w-3 rounded-full bg-rose-500 ring-2 ring-white"></span>';
+  return el;
+}
+
+export default function Map({
+  points,
+  selectedIndex,
+  onSelectPoint,
+  showRoute = true,
+  variant = "stop",
+}: MapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-  // Initialize the map once and (re)draw pins + route when stops change.
   useEffect(() => {
-    if (!token || !containerRef.current || stops.length === 0) return;
+    if (!token || !containerRef.current || points.length === 0) return;
     mapboxgl.accessToken = token;
 
-    const coords = stops.map(
-      (s) => [s.place.lng, s.place.lat] as [number, number],
-    );
+    const coords = points.map((p) => [p.lng, p.lat] as [number, number]);
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
@@ -46,31 +76,29 @@ export default function Map({ stops, selectedIndex, onSelectStop }: MapProps) {
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
 
     map.on("load", () => {
-      // One stylized route line through the stops in order.
-      map.addSource("route", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: { type: "LineString", coordinates: coords },
-        },
-      });
-      map.addLayer({
-        id: "route",
-        type: "line",
-        source: "route",
-        layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#18181b", "line-width": 2.5, "line-opacity": 0.5 },
-      });
+      if (showRoute && coords.length > 1) {
+        map.addSource("route", {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            properties: {},
+            geometry: { type: "LineString", coordinates: coords },
+          },
+        });
+        map.addLayer({
+          id: "route",
+          type: "line",
+          source: "route",
+          layout: { "line-cap": "round", "line-join": "round" },
+          paint: { "line-color": "#18181b", "line-width": 2.5, "line-opacity": 0.5 },
+        });
+      }
 
-      // Custom numbered pins, in chronological order.
-      stops.forEach((stop, i) => {
-        const el = document.createElement("button");
-        el.className = PIN_BASE;
-        el.textContent = String(i + 1);
+      points.forEach((_, i) => {
+        const el = variant === "event" ? makeEventEl() : makeStopEl(i);
         el.addEventListener("click", (e) => {
           e.stopPropagation();
-          onSelectStop(i);
+          onSelectPoint(i);
         });
         const marker = new mapboxgl.Marker({ element: el })
           .setLngLat(coords[i])
@@ -78,7 +106,6 @@ export default function Map({ stops, selectedIndex, onSelectStop }: MapProps) {
         markersRef.current.push(marker);
       });
 
-      // Frame the whole day.
       const bounds = coords.reduce(
         (b, c) => b.extend(c),
         new mapboxgl.LngLatBounds(coords[0], coords[0]),
@@ -92,19 +119,21 @@ export default function Map({ stops, selectedIndex, onSelectStop }: MapProps) {
       map.remove();
       mapRef.current = null;
     };
-  }, [stops, token, onSelectStop]);
+  }, [points, token, onSelectPoint, showRoute, variant]);
 
-  // Highlight the selected pin and fly to it.
+  // Highlight + fly to the selected point.
   useEffect(() => {
+    const base = variant === "event" ? EVENT_BASE : STOP_BASE;
+    const selectedCls = variant === "event" ? EVENT_SELECTED : STOP_SELECTED;
     markersRef.current.forEach((marker, i) => {
       marker.getElement().className =
-        i === selectedIndex ? `${PIN_BASE} ${PIN_SELECTED}` : PIN_BASE;
+        i === selectedIndex ? `${base} ${selectedCls}` : base;
     });
-    if (selectedIndex != null && mapRef.current && stops[selectedIndex]) {
-      const { lng, lat } = stops[selectedIndex].place;
+    if (selectedIndex != null && mapRef.current && points[selectedIndex]) {
+      const { lng, lat } = points[selectedIndex];
       mapRef.current.flyTo({ center: [lng, lat], zoom: 14, speed: 0.8 });
     }
-  }, [selectedIndex, stops]);
+  }, [selectedIndex, points, variant]);
 
   if (!token) {
     return (

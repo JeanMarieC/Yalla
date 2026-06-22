@@ -6,9 +6,8 @@
 - Local:         http://localhost:3000
 - Network:       http://192.168.10.83:3000
 - Environments: .env.local
-✓ Ready in 766ms
+✓ Ready in 816ms
 
- GET /login 200 in 1045ms (next.js: 488ms, proxy.ts: 319ms, application-code: 238ms)
- GET /signup 200 in 365ms (next.js: 317ms, proxy.ts: 7ms, application-code: 41ms)
- GET /trips 307 in 606ms (next.js: 511ms, proxy.ts: 5ms, application-code: 90ms)
- GET /login 200 in 48ms (next.js: 5ms, proxy.ts: 5ms, application-code: 38ms)
+ GET /lobby/00000000-0000-0000-0000-000000000000 307 in 1856ms (next.js: 1341ms, proxy.ts: 302ms, application-code: 212ms)
+ GET /login?next=/lobby/00000000-0000-0000-0000-000000000000 200 in 169ms (next.js: 38ms, proxy.ts: 7ms, application-code: 125ms)
+ GET / 200 in 119ms (next.js: 36ms, proxy.ts: 6ms, application-code: 77ms)

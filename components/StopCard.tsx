@@ -4,6 +4,7 @@
 // Bottom sheet on mobile, right-side drawer on desktop. Always mounted so it
 // can animate in/out via transform; visibility is driven by `stop`.
 
+import Link from "next/link";
 import type { ItineraryStop } from "@/lib/ai/planDay";
 
 interface StopCardProps {
@@ -84,6 +85,13 @@ export default function StopCard({ stop, index, total, onClose }: StopCardProps)
           <p className="mt-6 text-sm leading-relaxed text-zinc-500">
             {stop.place.description}
           </p>
+
+          <Link
+            href={`/place/${stop.place.id}`}
+            className="mt-6 inline-block text-sm font-medium text-zinc-900 underline"
+          >
+            Reviews &amp; details →
+          </Link>
         </div>
       )}
     </div>
