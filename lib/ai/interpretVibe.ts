@@ -7,6 +7,7 @@
 // the browser (no NEXT_PUBLIC_ prefix).
 
 import { GoogleGenAI, Type } from "@google/genai";
+import { withGeminiRetry } from "./gemini";
 
 /**
  * Structured interpretation of a free-text vibe.
@@ -72,17 +73,19 @@ export async function interpretVibe(vibe: string): Promise<VibeProfile> {
 
   const ai = new GoogleGenAI({ apiKey });
 
-  const response = await ai.models.generateContent({
-    model: MODEL,
-    contents: trimmed,
-    config: {
-      systemInstruction: SYSTEM_INSTRUCTION,
-      // The two lines that turn on JSON mode:
-      responseMimeType: "application/json",
-      responseSchema: RESPONSE_SCHEMA,
-      temperature: 0.4,
-    },
-  });
+  const response = await withGeminiRetry(() =>
+    ai.models.generateContent({
+      model: MODEL,
+      contents: trimmed,
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        // The two lines that turn on JSON mode:
+        responseMimeType: "application/json",
+        responseSchema: RESPONSE_SCHEMA,
+        temperature: 0.4,
+      },
+    }),
+  );
 
   const text = response.text;
   if (!text) {

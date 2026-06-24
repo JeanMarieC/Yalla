@@ -3,6 +3,7 @@
 // Server-side only: reads GEMINI_API_KEY from env, never exposed to the client.
 
 import { GoogleGenAI } from "@google/genai";
+import { withGeminiRetry } from "./gemini";
 
 // Current Gemini embedding model (free tier).
 const MODEL = "gemini-embedding-001";
@@ -39,14 +40,16 @@ export async function embed(
 
   const ai = new GoogleGenAI({ apiKey });
 
-  const response = await ai.models.embedContent({
-    model: MODEL,
-    contents: trimmed,
-    config: {
-      taskType,
-      outputDimensionality: EMBEDDING_DIMENSION,
-    },
-  });
+  const response = await withGeminiRetry(() =>
+    ai.models.embedContent({
+      model: MODEL,
+      contents: trimmed,
+      config: {
+        taskType,
+        outputDimensionality: EMBEDDING_DIMENSION,
+      },
+    }),
+  );
 
   const values = response.embeddings?.[0]?.values;
   if (!values || values.length === 0) {

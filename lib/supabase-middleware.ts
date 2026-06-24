@@ -33,7 +33,30 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: refreshes the token cookie. Do not run logic between creating the
   // client and this call.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Auth gate: everything requires login except the auth pages themselves and
+  // API routes (which do their own auth). Unauthenticated visitors land on
+  // /login, with ?next so they return where they were headed (e.g. a shared
+  // lobby link) after signing in.
+  const path = request.nextUrl.pathname;
+  const isPublic =
+    path.startsWith("/login") ||
+    path.startsWith("/signup") ||
+    path.startsWith("/auth") ||
+    path.startsWith("/api");
+
+  if (!user && !isPublic) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("next", path + request.nextUrl.search);
+    const redirect = NextResponse.redirect(url);
+    // Carry over any refreshed auth cookies onto the redirect response.
+    response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+    return redirect;
+  }
 
   return response;
 }

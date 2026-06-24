@@ -4,6 +4,7 @@
 // falls back to a plain generated line — the model never breaks valid data.
 
 import { GoogleGenAI, Type } from "@google/genai";
+import { withGeminiRetry } from "./gemini";
 
 export interface WhyItFitsItem {
   name: string;
@@ -31,25 +32,27 @@ export async function generateWhyItFits(
       )
       .join("\n");
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents:
-        `Vibe: "${vibe}"\n\nItems in order:\n${numbered}\n\n` +
-        `Write one warm, specific "why this fits you" line per item, in order.`,
-      config: {
-        systemInstruction:
-          "You write short second-person notes. Each line <= 20 words, " +
-          "references the vibe's feeling, no name needed, no quotes.",
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: { type: Type.STRING },
-          minItems: String(items.length),
-          maxItems: String(items.length),
+    const response = await withGeminiRetry(() =>
+      ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents:
+          `Vibe: "${vibe}"\n\nItems in order:\n${numbered}\n\n` +
+          `Write one warm, specific "why this fits you" line per item, in order.`,
+        config: {
+          systemInstruction:
+            "You write short second-person notes. Each line <= 20 words, " +
+            "references the vibe's feeling, no name needed, no quotes.",
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING },
+            minItems: String(items.length),
+            maxItems: String(items.length),
+          },
+          temperature: 0.7,
         },
-        temperature: 0.7,
-      },
-    });
+      }),
+    );
 
     const text = response.text;
     if (!text) return fallback;

@@ -10,6 +10,8 @@
     "test:vibe": "tsx scripts/testVibe.ts",
     "seed:places": "tsx scripts/seedPlaces.ts",
     "seed:events": "tsx scripts/seedEvents.ts",
+    "seed:destinations": "tsx scripts/seedDestinations.ts",
+    "ingest": "tsx scripts/ingestCity.ts",
     "test:places": "tsx scripts/testPlaces.ts",
     "test:match": "tsx scripts/testMatch.ts",
     "test:plan": "tsx scripts/testPlan.ts"

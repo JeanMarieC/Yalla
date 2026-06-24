@@ -3,6 +3,7 @@
 // loop never depends on a successful AI call.
 
 import { GoogleGenAI } from "@google/genai";
+import { withGeminiRetry } from "./gemini";
 
 export interface ReviewLite {
   rating: number;
@@ -26,18 +27,20 @@ export async function summarizeReviews(reviews: ReviewLite[]): Promise<string> {
       .map((r, i) => `${i + 1}. (${r.rating}/5) ${r.body ?? ""}`.trim())
       .join("\n");
 
-    const res = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents:
-        `Reviews:\n${text}\n\n` +
-        `Write ONE honest consensus sentence (<= 18 words). Name a real positive ` +
-        `and any recurring caveat (e.g. "gets loud after 9pm") if present.`,
-      config: {
-        systemInstruction:
-          "You distill reviews into one balanced, specific line. No rating numbers, no quotes.",
-        temperature: 0.5,
-      },
-    });
+    const res = await withGeminiRetry(() =>
+      ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents:
+          `Reviews:\n${text}\n\n` +
+          `Write ONE honest consensus sentence (<= 18 words). Name a real positive ` +
+          `and any recurring caveat (e.g. "gets loud after 9pm") if present.`,
+        config: {
+          systemInstruction:
+            "You distill reviews into one balanced, specific line. No rating numbers, no quotes.",
+          temperature: 0.5,
+        },
+      }),
+    );
 
     return res.text?.trim() || fallback;
   } catch {

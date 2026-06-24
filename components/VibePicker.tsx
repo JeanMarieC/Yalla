@@ -61,18 +61,18 @@ export default function VibePicker({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Field label="City">
-              <select
+              <input
+                list="yalla-cities"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
+                placeholder="Anywhere"
                 className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
-              >
-                <option value="">Anywhere</option>
+              />
+              <datalist id="yalla-cities">
                 {CITIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c} />
                 ))}
-              </select>
+              </datalist>
             </Field>
 
             <Field label="Start">
