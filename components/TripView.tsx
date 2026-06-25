@@ -16,7 +16,7 @@ import type { MapPoint } from "@/components/Map";
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
-  loading: () => <div className="h-full w-full bg-stone-100" />,
+  loading: () => <div className="h-full w-full bg-canvas" />,
 });
 
 interface TripViewProps {
@@ -89,27 +89,37 @@ export default function TripView({
       {/* Loading / empty overlays for the Pulse. */}
       {pulseOn && pulseLoading && (
         <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center">
-          <span className="rounded-full bg-white/90 px-4 py-2 text-sm text-stone-600 shadow">
+          <span className="rounded-full bg-surface/90 px-4 py-2 text-sm text-ink-soft shadow-md backdrop-blur">
             Reading the Pulse…
           </span>
         </div>
       )}
       {emptyPulse && (
         <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center px-6">
-          <span className="rounded-2xl bg-white/90 px-5 py-3 text-center text-sm text-stone-600 shadow">
+          <span className="rounded-2xl bg-surface/90 px-5 py-3 text-center text-sm text-ink-soft shadow-md backdrop-blur">
             Nothing live this week for that vibe{city ? ` in ${city}` : ""}.
           </span>
         </div>
       )}
 
       {/* Editorial panel — desktop only. */}
-      <aside className="absolute inset-y-0 left-0 z-10 hidden w-[380px] flex-col bg-white/95 backdrop-blur md:flex">
+      <aside className="absolute inset-y-0 left-0 z-10 hidden w-[400px] flex-col border-r border-hairline bg-surface/95 backdrop-blur md:flex">
         <header className="flex items-baseline justify-between gap-4 px-6 pb-4 pt-6">
           <div className="min-w-0">
-            <h1 className="text-xl font-semibold tracking-tight">
-              {pulseOn ? "The Pulse" : title}
+            <p
+              className={`yalla-eyebrow mb-1.5 flex items-center gap-2 text-[11px] ${
+                pulseOn ? "text-sage-deep" : ""
+              }`}
+            >
+              {pulseOn && <span className="h-2 w-2 rounded-full bg-sage animate-pulse-ring" />}
+              {pulseOn ? "The Pulse · live this week" : `Your day · ${itinerary.length} stops`}
+            </p>
+            <h1 className="font-display text-[26px] leading-tight tracking-tight text-ink">
+              {pulseOn ? "What's alive here" : title}
             </h1>
-            <p className="mt-1 truncate text-sm text-stone-500">&ldquo;{vibe}&rdquo;</p>
+            <p className="mt-1 truncate font-display text-sm italic text-muted">
+              &ldquo;{vibe}&rdquo;
+            </p>
           </div>
           <div className="flex shrink-0 items-center gap-2">{actions}</div>
         </header>
@@ -131,18 +141,18 @@ export default function TripView({
       </aside>
 
       {/* Mobile top bar. */}
-      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 bg-gradient-to-b from-white/90 to-transparent px-4 pb-8 pt-4 md:hidden">
-        <p className="truncate text-sm font-medium">&ldquo;{vibe}&rdquo;</p>
+      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 bg-gradient-to-b from-surface/90 to-transparent px-4 pb-8 pt-4 md:hidden">
+        <p className="truncate font-display text-sm italic text-ink">&ldquo;{vibe}&rdquo;</p>
         <div className="flex shrink-0 items-center gap-2">{actions}</div>
       </div>
 
       {/* The single Pulse toggle. */}
       <button
         onClick={togglePulse}
-        className={`absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium shadow-lg transition ${
+        className={`absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2.5 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg backdrop-blur transition ${
           pulseOn
-            ? "bg-rose-600 text-white hover:bg-rose-500"
-            : "bg-white text-stone-900 hover:bg-stone-50"
+            ? "bg-sage text-white hover:bg-sage-deep"
+            : "border border-hairline bg-surface/95 text-ink hover:bg-paper"
         }`}
       >
         <span className="relative flex h-2.5 w-2.5">
@@ -151,7 +161,7 @@ export default function TripView({
           )}
           <span
             className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
-              pulseOn ? "bg-white" : "bg-rose-500"
+              pulseOn ? "bg-white" : "bg-sage"
             }`}
           />
         </span>

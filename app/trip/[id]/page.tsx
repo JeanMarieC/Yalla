@@ -34,16 +34,10 @@ export default async function TripPage({
       title={trip.title}
       actions={
         <>
-          <Link
-            href={`/lobby/${id}`}
-            className="rounded-full bg-stone-900 px-3 py-1.5 text-sm text-white transition hover:bg-stone-700"
-          >
+          <Link href={`/lobby/${id}`} className="btn-primary px-4 py-1.5 text-sm">
             Open lobby
           </Link>
-          <Link
-            href="/trips"
-            className="rounded-full border border-stone-200 bg-white/80 px-3 py-1.5 text-sm transition hover:bg-stone-50"
-          >
+          <Link href="/trips" className="btn-ghost px-4 py-1.5 text-sm">
             My Trips
           </Link>
         </>

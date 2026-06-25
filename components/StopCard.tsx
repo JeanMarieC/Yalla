@@ -31,70 +31,70 @@ export default function StopCard({ stop, index, total, onClose }: StopCardProps)
     >
       {stop && index != null && (
         <div className="flex h-full flex-col p-6 pb-8 md:p-8">
-          <div className="mx-auto mb-4 h-1.5 w-10 shrink-0 rounded-full bg-stone-300 md:hidden" />
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <span className="flex items-center gap-3">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-900 text-sm font-semibold text-white">
-                {index + 1}
+          <div className="mx-auto mb-5 h-1 w-10 shrink-0 rounded-full bg-[#D7CDBA] md:hidden" />
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <span className="flex items-center gap-2.5">
+              <span className="flex h-6 w-6 -rotate-45 items-center justify-center rounded-[999px_999px_999px_3px] bg-terracotta">
+                <span className="rotate-45 text-[11px] font-bold text-white">{index + 1}</span>
               </span>
-              <span className="text-sm text-stone-400">
+              <span className="yalla-eyebrow">
                 Stop {index + 1} of {total}
               </span>
             </span>
             <button
               onClick={onClose}
               aria-label="Close"
-              className="rounded-full p-2 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-paper text-muted transition hover:text-ink"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <h2 className="text-2xl font-semibold tracking-tight">{stop.place.name}</h2>
-          <p className="mt-1 text-sm text-stone-500">
+          <h2 className="font-display text-2xl tracking-tight text-ink md:text-3xl">
+            {stop.place.name}
+          </h2>
+          <p className="mt-1 text-sm text-muted">
             {stop.place.place_types.join(" · ")}
           </p>
 
-          <dl className="mt-6 flex gap-8">
-            <div>
-              <dt className="text-xs uppercase tracking-wide text-stone-400">Arrive</dt>
-              <dd className="mt-1 text-lg font-medium tabular-nums">{stop.arrivalTime}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wide text-stone-400">Stay</dt>
-              <dd className="mt-1 text-lg font-medium tabular-nums">
-                {stop.durationMinutes} min
-              </dd>
-            </div>
+          <div className="mt-5 flex gap-2.5">
+            <Stat label="Arrive" value={stop.arrivalTime} />
+            <Stat label="Stay" value={`${stop.durationMinutes} min`} />
             {stop.travelToNextMinutes > 0 && (
-              <div>
-                <dt className="text-xs uppercase tracking-wide text-stone-400">To next</dt>
-                <dd className="mt-1 text-lg font-medium tabular-nums">
-                  {stop.travelToNextMinutes} min
-                </dd>
-              </div>
+              <Stat label="To next" value={`${stop.travelToNextMinutes} min`} />
             )}
-          </dl>
-
-          <div className="mt-6 rounded-2xl bg-stone-50 p-5">
-            <p className="text-xs uppercase tracking-wide text-stone-400">Why it fits</p>
-            <p className="mt-2 leading-relaxed text-stone-700">{stop.whyItFits}</p>
           </div>
 
-          <p className="mt-6 text-sm leading-relaxed text-stone-500">
+          <div className="mt-5 rounded-2xl border border-terracotta-tint-border bg-terracotta-tint p-4">
+            <p className="yalla-eyebrow text-[9.5px]">Why this fits you</p>
+            <p className="mt-1.5 font-display text-[15px] italic leading-relaxed text-[#7A4632]">
+              {stop.whyItFits}
+            </p>
+          </div>
+
+          <p className="mt-5 text-sm leading-relaxed text-ink-soft">
             {stop.place.description}
           </p>
 
           <Link
             href={`/place/${stop.place.id}`}
-            className="mt-6 inline-block text-sm font-medium text-stone-900 underline"
+            className="mt-6 inline-block text-sm font-semibold text-terracotta-deep underline underline-offset-[3px]"
           >
             Reviews &amp; details →
           </Link>
         </div>
       )}
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex-1 rounded-xl border border-hairline bg-white px-3 py-2.5">
+      <div className="text-[11px] text-muted">{label}</div>
+      <div className="mt-0.5 text-[15px] font-bold tabular-nums text-ink">{value}</div>
     </div>
   );
 }

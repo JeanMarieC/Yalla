@@ -61,8 +61,8 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-stone-200 p-5">
-      <p className="text-sm font-medium text-stone-700">
+    <form onSubmit={submit} className="yalla-card p-5">
+      <p className="text-sm font-semibold text-ink">
         {existing ? "Your review" : "Leave a review"}
       </p>
 
@@ -76,7 +76,7 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
             onMouseLeave={() => setHover(0)}
             aria-label={`${n} star${n > 1 ? "s" : ""}`}
             className={`text-2xl leading-none transition ${
-              n <= (hover || rating) ? "text-amber-400" : "text-stone-300"
+              n <= (hover || rating) ? "text-terracotta" : "text-[#D7CDBA]"
             }`}
           >
             ★
@@ -89,15 +89,11 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
         onChange={(e) => setBody(e.target.value)}
         rows={3}
         placeholder="What's it really like? (optional)"
-        className="mt-3 w-full resize-none rounded-xl border border-stone-200 px-4 py-2.5 outline-none transition focus:border-stone-400"
+        className="yalla-input mt-3 resize-none"
       />
 
       <div className="mt-3 flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={busy}
-          className="rounded-full bg-stone-900 px-5 py-2 text-sm text-white transition hover:bg-stone-700 disabled:opacity-40"
-        >
+        <button type="submit" disabled={busy} className="btn-primary px-5 py-2 text-sm">
           {busy ? "Saving…" : existing ? "Update review" : "Post review"}
         </button>
         {existing && (
@@ -105,12 +101,12 @@ export default function ReviewForm({ placeId, existing }: ReviewFormProps) {
             type="button"
             onClick={remove}
             disabled={busy}
-            className="text-sm text-stone-500 underline transition hover:text-stone-800"
+            className="text-sm text-muted underline transition hover:text-ink"
           >
             Remove
           </button>
         )}
-        {error && <span className="text-sm text-red-500">{error}</span>}
+        {error && <span className="text-sm text-terracotta-deep">{error}</span>}
       </div>
     </form>
   );

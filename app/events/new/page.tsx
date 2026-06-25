@@ -58,33 +58,29 @@ export default function NewEventPage() {
     }
   }
 
-  const input =
-    "w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 outline-none transition focus:border-stone-400";
+  const input = "yalla-input";
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <TopNav />
       <main className="mx-auto w-full max-w-xl flex-1 px-6 py-8">
-        <h1 className="text-3xl font-semibold tracking-tight">Add an event</h1>
-        <p className="mt-2 text-stone-500">
+        <h1 className="font-display text-4xl font-normal tracking-tight text-ink">Add an event</h1>
+        <p className="mt-2 text-muted">
           Share something happening this week. It&apos;ll show up in the Pulse.
         </p>
 
         {!loading && !user ? (
-          <p className="mt-8 text-stone-600">
+          <p className="mt-8 text-ink-soft">
             Please{" "}
-            <Link href="/login" className="font-medium text-stone-900 underline">
+            <Link href="/login" className="font-semibold text-terracotta-deep">
               log in
             </Link>{" "}
             to add an event.
           </p>
         ) : status === "done" ? (
-          <div className="mt-8 rounded-2xl border border-stone-200 p-6">
-            <p className="text-stone-700">Event added — flip on the Pulse to see it.</p>
-            <Link
-              href="/"
-              className="mt-4 inline-block rounded-full bg-stone-900 px-5 py-2.5 text-sm text-white transition hover:bg-stone-700"
-            >
+          <div className="mt-8 yalla-card p-6">
+            <p className="text-ink-soft">Event added — flip on the Pulse to see it.</p>
+            <Link href="/" className="btn-primary mt-4 inline-flex px-5 py-2.5 text-sm">
               Back home
             </Link>
           </div>
@@ -107,7 +103,7 @@ export default function NewEventPage() {
             />
             <div className="grid grid-cols-2 gap-4">
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">City</span>
+                <span className="mb-1 block text-sm text-ink-soft">City</span>
                 <select
                   value={form.city}
                   onChange={(e) => set("city", e.target.value)}
@@ -119,7 +115,7 @@ export default function NewEventPage() {
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Tags (comma-sep)</span>
+                <span className="mb-1 block text-sm text-ink-soft">Tags (comma-sep)</span>
                 <input
                   placeholder="music, bar, night"
                   value={form.tags}
@@ -128,7 +124,7 @@ export default function NewEventPage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Latitude</span>
+                <span className="mb-1 block text-sm text-ink-soft">Latitude</span>
                 <input
                   required
                   type="number"
@@ -140,7 +136,7 @@ export default function NewEventPage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Longitude</span>
+                <span className="mb-1 block text-sm text-ink-soft">Longitude</span>
                 <input
                   required
                   type="number"
@@ -152,7 +148,7 @@ export default function NewEventPage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Starts</span>
+                <span className="mb-1 block text-sm text-ink-soft">Starts</span>
                 <input
                   required
                   type="datetime-local"
@@ -162,7 +158,7 @@ export default function NewEventPage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Ends</span>
+                <span className="mb-1 block text-sm text-ink-soft">Ends</span>
                 <input
                   required
                   type="datetime-local"
@@ -173,14 +169,10 @@ export default function NewEventPage() {
               </label>
             </div>
 
-            <button
-              type="submit"
-              disabled={status === "saving"}
-              className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
-            >
+            <button type="submit" disabled={status === "saving"} className="btn-primary w-full px-6 py-3.5 text-base">
               {status === "saving" ? "Saving…" : "Add event"}
             </button>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && <p className="text-sm text-terracotta-deep">{error}</p>}
           </form>
         )}
       </main>

@@ -146,7 +146,7 @@ export default function Home() {
                 setBrief(null);
                 setText("");
               }}
-              className="rounded-full border border-stone-200 bg-white/80 px-3 py-1.5 text-sm transition hover:bg-stone-50"
+              className="btn-ghost px-4 py-1.5 text-sm"
             >
               New plan
             </button>
@@ -156,65 +156,102 @@ export default function Home() {
     );
   }
 
-  const input =
-    "w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 outline-none transition focus:border-stone-400";
+  const input = "yalla-input";
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <TopNav />
       <main className="flex flex-1 items-center justify-center px-6 py-10">
-        <div className="w-full max-w-xl">
+        <div className="w-full max-w-2xl animate-fade-up text-center">
           <header className="mb-8">
-            <h1 className="text-5xl font-semibold tracking-tight">Yalla</h1>
-            <p className="mt-3 text-lg leading-relaxed text-stone-500">
-              Tell Yalla what you&apos;re after. It figures out the rest.
-            </p>
+            <p className="yalla-eyebrow mb-5">Where to today?</p>
+            <h1 className="font-display text-5xl font-normal leading-[1.04] tracking-tight text-ink sm:text-6xl">
+              Tell Yalla what you&apos;re after.
+            </h1>
           </header>
 
           {/* The smart box */}
-          <form onSubmit={interpret} className="space-y-3">
+          <form onSubmit={interpret} className="yalla-card p-5 text-left shadow-md sm:p-6">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={3}
               autoFocus
-              placeholder="a chill date night in Beirut · good hiking somewhere · what's on in Lisbon this weekend · a road trip to a concert in Byblos friday"
-              className="w-full resize-none rounded-2xl border border-stone-200 bg-white px-5 py-4 text-lg leading-relaxed shadow-sm outline-none transition focus:border-stone-400 focus:ring-2 focus:ring-stone-200"
+              placeholder="A chill date night in Beirut, somewhere walkable with golden-hour wine…"
+              className="w-full resize-none border-none bg-transparent font-display text-xl leading-relaxed text-ink outline-none placeholder:text-muted/80 placeholder:italic"
             />
-            <button
-              type="submit"
-              disabled={interpreting || !text.trim()}
-              className="w-full rounded-full bg-stone-900 px-6 py-4 text-base font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
-            >
-              {interpreting ? "Reading your brief…" : "Plan"}
-            </button>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-hairline-soft pt-4">
+              <div className="hidden flex-wrap gap-2 sm:flex">
+                {["a chill date night", "good hiking somewhere", "what's on in Lisbon"].map(
+                  (ex) => (
+                    <button
+                      key={ex}
+                      type="button"
+                      onClick={() => setText(ex)}
+                      className="rounded-full bg-paper px-3 py-1.5 text-[13px] text-muted transition hover:text-ink"
+                    >
+                      {ex}
+                    </button>
+                  ),
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={interpreting || !text.trim()}
+                className="btn-primary ml-auto px-6 py-3 text-[15px]"
+              >
+                {interpreting ? "Reading your brief…" : "Plan my day →"}
+              </button>
+            </div>
           </form>
 
-          {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
+          <p className="mt-5 text-[13.5px] text-muted">
+            Don&apos;t know where? Just say the vibe —{" "}
+            <span className="text-ink">we&apos;ll find the place.</span>
+          </p>
+
+          {error && <p className="mt-4 text-sm text-terracotta-deep">{error}</p>}
 
           {/* What Yalla understood — editable + routed */}
           {brief && (
-            <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-5">
-              <p className="text-xs uppercase tracking-wide text-stone-400">
-                Yalla understood
-              </p>
-
-              {/* Chips */}
-              <div className="mt-2 flex flex-wrap gap-2 text-sm">
-                <span className="rounded-full bg-stone-100 px-3 py-1">
-                  {labelForIntent(brief.intent)}
+            <div className="mt-6 animate-fade-up text-left">
+              <div className="mb-4 flex items-center gap-2.5">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sage text-sm text-white">
+                  ✓
                 </span>
-                {brief.timeframe.label && (
-                  <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-700">
-                    {brief.timeframe.label}
-                  </span>
-                )}
-                {brief.activities.map((a) => (
-                  <span key={a} className="rounded-full bg-stone-100 px-3 py-1">
-                    {a}
-                  </span>
-                ))}
+                <span className="font-display text-2xl tracking-tight text-ink">
+                  Yalla understood —
+                </span>
               </div>
+              <div className="yalla-card p-6 shadow-md">
+                <p className="mb-5 font-display text-lg italic text-ink-soft">
+                  &ldquo;{brief.raw}&rdquo;
+                </p>
+
+                {/* Chips */}
+                <div className="flex flex-wrap gap-2.5">
+                  <span className="yalla-chip">
+                    <span className="yalla-chip-key">intent</span>
+                    {labelForIntent(brief.intent)}
+                  </span>
+                  {brief.place && (
+                    <span className="yalla-chip yalla-chip-accent">
+                      <span className="yalla-chip-key opacity-70">place</span>
+                      {brief.place}
+                    </span>
+                  )}
+                  {brief.timeframe.label && (
+                    <span className="yalla-chip">
+                      <span className="yalla-chip-key">when</span>
+                      {brief.timeframe.label}
+                    </span>
+                  )}
+                  {brief.activities.map((a) => (
+                    <span key={a} className="yalla-chip">
+                      {a}
+                    </span>
+                  ))}
+                </div>
 
               {/* plan_here / find_destination both resolve to "plan in a place" once a place is set */}
               {brief.intent !== "road_trip" ? (
@@ -226,10 +263,10 @@ export default function Home() {
                     }
                   />
                 ) : (
-                <div className="mt-4 space-y-3">
+                <div className="mt-6 space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <label className="block">
-                      <span className="mb-1 block text-sm text-stone-600">Place</span>
+                      <span className="mb-1.5 block text-sm text-ink-soft">Place</span>
                       <input
                         value={place}
                         onChange={(e) => setPlace(e.target.value)}
@@ -238,7 +275,7 @@ export default function Home() {
                       />
                     </label>
                     <label className="block">
-                      <span className="mb-1 block text-sm text-stone-600">For</span>
+                      <span className="mb-1.5 block text-sm text-ink-soft">For</span>
                       <select
                         value={occasion}
                         onChange={(e) => setOccasion(e.target.value as Occasion)}
@@ -252,7 +289,7 @@ export default function Home() {
                       </select>
                     </label>
                     <label className="block">
-                      <span className="mb-1 block text-sm text-stone-600">Start</span>
+                      <span className="mb-1.5 block text-sm text-ink-soft">Start</span>
                       <input
                         type="time"
                         value={startTime}
@@ -261,7 +298,7 @@ export default function Home() {
                       />
                     </label>
                     <label className="block">
-                      <span className="mb-1 block text-sm text-stone-600">Hours</span>
+                      <span className="mb-1.5 block text-sm text-ink-soft">Hours</span>
                       <select
                         value={hours}
                         onChange={(e) => setHours(Number(e.target.value))}
@@ -278,15 +315,15 @@ export default function Home() {
                   <button
                     onClick={planFromBrief}
                     disabled={planning || !place.trim()}
-                    className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
+                    className="btn-primary w-full px-6 py-3.5 text-base"
                   >
-                    {planning ? "Planning your day…" : "Plan my day"}
+                    {planning ? "Planning your day…" : "Plan my day →"}
                   </button>
                 </div>
                 )
               ) : (
-                <div className="mt-4 space-y-3">
-                  <p className="text-sm text-stone-500">
+                <div className="mt-6 space-y-3">
+                  <p className="text-sm text-ink-soft">
                     That&apos;s a road trip{brief.place ? ` to ${brief.place}` : ""}.
                     Open the road-trip setup to add start + event coordinates.
                   </p>
@@ -295,31 +332,34 @@ export default function Home() {
                       setManualOpen(true);
                       setManualMode("roadtrip");
                     }}
-                    className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700"
+                    className="btn-primary w-full px-6 py-3.5 text-base"
                   >
                     Set up the road trip
                   </button>
                 </div>
               )}
+              </div>
             </div>
           )}
 
           {/* Manual fallback — both modes stay available */}
-          <div className="mt-8">
+          <div className="mt-8 text-left">
             <button
               onClick={() => setManualOpen((v) => !v)}
-              className="text-sm text-stone-500 underline transition hover:text-stone-800"
+              className="text-sm font-medium text-terracotta-deep underline underline-offset-[3px] transition hover:text-terracotta"
             >
               {manualOpen ? "Hide manual setup" : "Prefer to set it up yourself?"}
             </button>
 
             {manualOpen && (
-              <div className="mt-5">
-                <div className="mb-6 inline-flex rounded-full bg-stone-100 p-1 text-sm">
+              <div className="mt-5 animate-fade-up">
+                <div className="mb-6 inline-flex rounded-full bg-paper p-1 text-sm">
                   <button
                     onClick={() => setManualMode("city")}
                     className={`rounded-full px-4 py-1.5 transition ${
-                      manualMode === "city" ? "bg-white shadow-sm" : "text-stone-500"
+                      manualMode === "city"
+                        ? "bg-surface text-ink shadow-sm"
+                        : "text-muted"
                     }`}
                   >
                     Plan in a place
@@ -327,7 +367,9 @@ export default function Home() {
                   <button
                     onClick={() => setManualMode("roadtrip")}
                     className={`rounded-full px-4 py-1.5 transition ${
-                      manualMode === "roadtrip" ? "bg-white shadow-sm" : "text-stone-500"
+                      manualMode === "roadtrip"
+                        ? "bg-surface text-ink shadow-sm"
+                        : "text-muted"
                     }`}
                   >
                     Road trip

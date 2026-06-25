@@ -53,22 +53,21 @@ export default function NewPlacePage() {
     }
   }
 
-  const input =
-    "w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 outline-none transition focus:border-stone-400";
+  const input = "yalla-input";
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <TopNav />
       <main className="mx-auto w-full max-w-xl flex-1 px-6 py-8">
-        <h1 className="text-3xl font-semibold tracking-tight">Add a place</h1>
-        <p className="mt-2 text-stone-500">
+        <h1 className="font-display text-4xl font-normal tracking-tight text-ink">Add a place</h1>
+        <p className="mt-2 text-muted">
           Know a spot worth visiting? Add it to the catalog.
         </p>
 
         {!loading && !user ? (
-          <p className="mt-8 text-stone-600">
+          <p className="mt-8 text-ink-soft">
             Please{" "}
-            <Link href="/login" className="font-medium text-stone-900 underline">
+            <Link href="/login" className="font-semibold text-terracotta-deep">
               log in
             </Link>{" "}
             to add a place.
@@ -92,7 +91,7 @@ export default function NewPlacePage() {
             />
             <div className="grid grid-cols-2 gap-4">
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">City</span>
+                <span className="mb-1 block text-sm text-ink-soft">City</span>
                 <input
                   required
                   placeholder="Beirut"
@@ -102,7 +101,7 @@ export default function NewPlacePage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Types (comma-sep)</span>
+                <span className="mb-1 block text-sm text-ink-soft">Types (comma-sep)</span>
                 <input
                   placeholder="wine bar, bar"
                   value={form.types}
@@ -111,7 +110,7 @@ export default function NewPlacePage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Latitude</span>
+                <span className="mb-1 block text-sm text-ink-soft">Latitude</span>
                 <input
                   required
                   type="number"
@@ -123,7 +122,7 @@ export default function NewPlacePage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm text-stone-600">Longitude</span>
+                <span className="mb-1 block text-sm text-ink-soft">Longitude</span>
                 <input
                   required
                   type="number"
@@ -136,14 +135,10 @@ export default function NewPlacePage() {
               </label>
             </div>
 
-            <button
-              type="submit"
-              disabled={busy}
-              className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
-            >
+            <button type="submit" disabled={busy} className="btn-primary w-full px-6 py-3.5 text-base">
               {busy ? "Saving…" : "Add place"}
             </button>
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && <p className="text-sm text-terracotta-deep">{error}</p>}
           </form>
         )}
       </main>

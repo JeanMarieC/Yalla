@@ -19,13 +19,13 @@ export default function EventList({
 }: EventListProps) {
   if (events.length === 0) {
     return (
-      <p className="px-4 py-6 text-sm text-stone-500">
+      <p className="px-4 py-6 text-sm text-muted">
         Nothing live this week for that vibe here.
       </p>
     );
   }
   return (
-    <ol className="space-y-1">
+    <ol className="space-y-2">
       {events.map((ev, i) => {
         const selected = i === selectedIndex;
         return (
@@ -33,19 +33,18 @@ export default function EventList({
             <button
               type="button"
               onClick={() => onSelect?.(i)}
-              className={`flex w-full gap-4 rounded-2xl px-4 py-4 text-left transition ${
-                selected ? "bg-rose-50" : "hover:bg-stone-50"
+              className={`w-full rounded-2xl border border-l-[3px] border-hairline border-l-sage bg-surface px-4 py-3.5 text-left transition ${
+                selected ? "bg-sage-tint/60" : "hover:bg-paper/60"
               }`}
             >
-              <span className="mt-1.5 flex h-3 w-3 shrink-0 rounded-full bg-rose-500 ring-2 ring-rose-200" />
-              <span className="min-w-0 flex-1">
-                <span className="truncate font-medium text-stone-900">{ev.name}</span>
-                <span className="mt-0.5 block text-sm text-stone-500">
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="truncate font-semibold text-ink">{ev.name}</span>
+                <span className="shrink-0 text-xs font-semibold text-sage-deep">
                   {formatEventWhen(ev.start_time, ev.end_time)}
                 </span>
-                <span className="mt-1.5 block text-sm leading-relaxed text-stone-600">
-                  {ev.whyItFits}
-                </span>
+              </span>
+              <span className="mt-1 block font-display text-[13.5px] italic leading-snug text-muted">
+                {ev.whyItFits}
               </span>
             </button>
           </li>

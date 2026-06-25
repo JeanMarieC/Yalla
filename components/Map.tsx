@@ -23,12 +23,12 @@ interface MapProps {
   routeLine?: [number, number][];
 }
 
-// Numbered itinerary pin (monochrome).
+// Numbered itinerary pin — the design's teardrop (rotated square, one round corner).
 const STOP_BASE =
-  "flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-stone-900 text-xs font-semibold text-white shadow-md transition-transform duration-200";
-const STOP_SELECTED = "scale-125 ring-4 ring-stone-900/15";
+  "yalla-pin flex h-9 w-9 cursor-pointer items-center justify-center text-white transition-transform duration-200";
+const STOP_SELECTED = "yalla-pin-selected";
 
-// Glowing "alive" event pin.
+// Glowing "alive" event pin (sage).
 const EVENT_BASE =
   "relative inline-flex h-5 w-5 cursor-pointer items-center justify-center transition-transform duration-200";
 const EVENT_SELECTED = "scale-150";
@@ -36,7 +36,8 @@ const EVENT_SELECTED = "scale-150";
 function makeStopEl(i: number) {
   const el = document.createElement("button");
   el.className = STOP_BASE;
-  el.textContent = String(i + 1);
+  // Teardrop body is rotated -45°; counter-rotate the number so it stays upright.
+  el.innerHTML = `<span style="transform:rotate(45deg)" class="text-[13px] font-bold text-[#F2ECE0]">${i + 1}</span>`;
   return el;
 }
 
@@ -44,8 +45,8 @@ function makeEventEl() {
   const el = document.createElement("button");
   el.className = EVENT_BASE;
   el.innerHTML =
-    '<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-75"></span>' +
-    '<span class="relative inline-flex h-3 w-3 rounded-full bg-rose-500 ring-2 ring-white"></span>';
+    '<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#7C9A6B] opacity-75"></span>' +
+    '<span class="relative inline-flex h-3 w-3 rounded-full bg-[#7C9A6B] ring-2 ring-white"></span>';
   return el;
 }
 
@@ -75,6 +76,14 @@ export default function Map({
       zoom: 12,
       attributionControl: false,
     });
+    // Warm the canvas to match the paper palette.
+    map.on("style.load", () => {
+      try {
+        map.setPaintProperty("background", "background-color", "#E7E0D2");
+      } catch {
+        /* style layer not present — harmless */
+      }
+    });
     mapRef.current = map;
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
 
@@ -94,7 +103,12 @@ export default function Map({
           type: "line",
           source: "route",
           layout: { "line-cap": "round", "line-join": "round" },
-          paint: { "line-color": "#18181b", "line-width": 2.5, "line-opacity": 0.5 },
+          paint: {
+            "line-color": "#C0603C",
+            "line-width": 3,
+            "line-opacity": 0.85,
+            "line-dasharray": [0.4, 2.2],
+          },
         });
       }
 
@@ -141,7 +155,7 @@ export default function Map({
 
   if (!token) {
     return (
-      <div className="flex h-full items-center justify-center bg-stone-100 p-6 text-center text-sm text-stone-500">
+      <div className="flex h-full items-center justify-center bg-canvas p-6 text-center text-sm text-muted">
         Map unavailable — set NEXT_PUBLIC_MAPBOX_TOKEN in .env.local.
       </div>
     );

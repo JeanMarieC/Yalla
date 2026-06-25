@@ -42,10 +42,7 @@ export default function VibePicker({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="vibe"
-              className="mb-2 block text-sm font-medium text-stone-600"
-            >
+            <label htmlFor="vibe" className="mb-2 block text-sm font-medium text-ink-soft">
               What&apos;s the mood?
             </label>
             <textarea
@@ -55,7 +52,7 @@ export default function VibePicker({
               rows={3}
               autoFocus
               placeholder="moody coastal, vinyl bars, hidden bakeries…"
-              className="w-full resize-none rounded-2xl border border-stone-200 bg-white px-5 py-4 text-lg leading-relaxed shadow-sm outline-none transition focus:border-stone-400 focus:ring-2 focus:ring-stone-200"
+              className="w-full resize-none rounded-3xl border border-hairline bg-surface px-5 py-4 font-display text-lg leading-relaxed shadow-sm outline-none transition placeholder:text-muted/80 placeholder:italic focus:border-terracotta focus:ring-2 focus:ring-terracotta/15"
             />
           </div>
 
@@ -66,7 +63,7 @@ export default function VibePicker({
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Anywhere"
-                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
+                className="yalla-input"
               />
               <datalist id="yalla-cities">
                 {CITIES.map((c) => (
@@ -80,7 +77,7 @@ export default function VibePicker({
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
+                className="yalla-input"
               />
             </Field>
 
@@ -88,7 +85,7 @@ export default function VibePicker({
               <select
                 value={timeBudget}
                 onChange={(e) => setTimeBudget(Number(e.target.value))}
-                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 outline-none transition focus:border-stone-400"
+                className="yalla-input"
               >
                 {BUDGETS.map((h) => (
                   <option key={h} value={h}>
@@ -102,14 +99,14 @@ export default function VibePicker({
           <button
             type="submit"
             disabled={loading || !vibe.trim()}
-            className="w-full rounded-full bg-stone-900 px-6 py-4 text-base font-medium text-white transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn-primary w-full px-6 py-4 text-base"
           >
-            {loading ? "Planning your day…" : "Plan my day"}
+            {loading ? "Planning your day…" : "Plan my day →"}
           </button>
 
-          {error && <p className="text-center text-sm text-red-500">{error}</p>}
+          {error && <p className="text-center text-sm text-terracotta-deep">{error}</p>}
           {noResults && !error && (
-            <p className="text-center text-sm text-stone-500">
+            <p className="text-center text-sm text-muted">
               Nothing matched that vibe yet — try another mood or city.
             </p>
           )}
@@ -120,7 +117,7 @@ export default function VibePicker({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-stone-600">{label}</span>
+      <span className="mb-2 block text-sm font-medium text-ink-soft">{label}</span>
       {children}
     </label>
   );

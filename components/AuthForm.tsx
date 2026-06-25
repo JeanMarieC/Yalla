@@ -60,64 +60,104 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-16">
-      <div className="w-full max-w-sm">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {isSignup ? "Create your account" : "Welcome back"}
-        </h1>
-        <p className="mt-2 text-stone-500">
-          {isSignup ? "Save and revisit your days." : "Log in to find your saved trips."}
+    <main className="flex min-h-[100dvh] flex-1 overflow-hidden bg-surface md:items-stretch">
+      {/* Brand panel — desktop only. The warm welcome. */}
+      <div className="relative hidden w-[46%] max-w-[560px] flex-col justify-between overflow-hidden bg-ink p-11 md:flex">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-80"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(135deg, rgba(192,96,60,.10) 0 2px, transparent 2px 22px)",
+          }}
+        />
+        <div
+          className="pointer-events-none absolute -right-28 -top-20 h-[420px] w-[420px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle at 30% 30%, rgba(192,96,60,.55), rgba(192,96,60,0) 62%)",
+          }}
+        />
+        <Link href="/" className="relative flex items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-paper font-display text-xl text-ink">
+            y
+          </span>
+          <span className="font-display text-xl text-paper">Yalla</span>
+        </Link>
+        <div className="relative">
+          <p className="yalla-eyebrow mb-5 text-terracotta">Trust us — just go</p>
+          <h2 className="font-display text-4xl font-normal leading-[1.08] tracking-tight text-[#F6F1E8]">
+            Tell us the vibe.
+            <br />
+            We&apos;ll find the day worth showing up for.
+          </h2>
+        </div>
+        <p className="relative text-sm text-[#A89E8C]">
+          No itineraries to build. No tabs to open. Just one good day.
         </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            autoComplete="email"
-            className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 outline-none transition focus:border-stone-400"
-          />
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password (min 6 chars)"
-            autoComplete={isSignup ? "new-password" : "current-password"}
-            className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 outline-none transition focus:border-stone-400"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700 disabled:opacity-40"
-          >
-            {loading ? "…" : isSignup ? "Sign up" : "Log in"}
-          </button>
-        </form>
+      {/* Form */}
+      <div className="flex flex-1 items-center justify-center px-6 py-16">
+        <div className="w-full max-w-sm animate-fade-up">
+          <h1 className="font-display text-3xl font-normal tracking-tight text-ink">
+            {isSignup ? "Create your account" : "Welcome back"}
+          </h1>
+          <p className="mt-1.5 text-muted">
+            {isSignup
+              ? "Save and revisit your days."
+              : "Pick up where wanderlust left off."}
+          </p>
 
-        {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
-        {notice && <p className="mt-4 text-sm text-stone-600">{notice}</p>}
+          <form onSubmit={handleSubmit} className="mt-7 space-y-3">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              className="yalla-input"
+            />
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password (min 6 chars)"
+              autoComplete={isSignup ? "new-password" : "current-password"}
+              className="yalla-input"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary mt-1 w-full px-6 py-3.5 text-base"
+            >
+              {loading ? "…" : isSignup ? "Sign up" : "Continue"}
+            </button>
+          </form>
 
-        <p className="mt-8 text-sm text-stone-500">
-          {isSignup ? (
-            <>
-              Already have an account?{" "}
-              <Link href="/login" className="font-medium text-stone-900 underline">
-                Log in
-              </Link>
-            </>
-          ) : (
-            <>
-              New here?{" "}
-              <Link href="/signup" className="font-medium text-stone-900 underline">
-                Sign up
-              </Link>
-            </>
-          )}
-        </p>
+          {error && <p className="mt-4 text-sm text-terracotta-deep">{error}</p>}
+          {notice && <p className="mt-4 text-sm text-ink-soft">{notice}</p>}
+
+          <p className="mt-8 text-sm text-muted">
+            {isSignup ? (
+              <>
+                Already have an account?{" "}
+                <Link href="/login" className="font-semibold text-terracotta-deep">
+                  Log in
+                </Link>
+              </>
+            ) : (
+              <>
+                New here?{" "}
+                <Link href="/signup" className="font-semibold text-terracotta-deep">
+                  Create an account
+                </Link>
+              </>
+            )}
+          </p>
+        </div>
       </div>
     </main>
   );

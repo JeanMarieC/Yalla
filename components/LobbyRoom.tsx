@@ -179,8 +179,8 @@ export default function LobbyRoom({
     <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-8">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-          <p className="mt-1 text-stone-500">&ldquo;{vibe}&rdquo;</p>
+          <h1 className="font-display text-3xl font-normal tracking-tight text-ink">{title}</h1>
+          <p className="mt-1 font-display italic text-muted">&ldquo;{vibe}&rdquo;</p>
         </div>
         <button
           onClick={() => {
@@ -188,7 +188,7 @@ export default function LobbyRoom({
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
           }}
-          className="shrink-0 rounded-full border border-stone-200 px-4 py-2 text-sm transition hover:bg-stone-50"
+          className="btn-ghost shrink-0 px-4 py-2 text-sm"
         >
           {copied ? "Link copied" : "Share"}
         </button>
@@ -196,22 +196,24 @@ export default function LobbyRoom({
 
       {/* Presence (Pass 1) */}
       <div className="mt-4 flex items-center gap-2">
-        <span className="text-sm text-stone-400">Here now</span>
+        <span className="text-sm text-faint">Here now</span>
         <div className="flex -space-x-2">
           {present.map((p) => (
-            <Avatar key={p.user_id} userId={p.user_id} email={p.email} ring="#fff" />
+            <Avatar key={p.user_id} userId={p.user_id} email={p.email} ring="#FCFAF4" />
           ))}
         </div>
       </div>
 
       {/* Re-plan status / change note (Pass 3) */}
       {replanning && (
-        <div className="mt-6 rounded-2xl bg-amber-50 px-5 py-3 text-sm text-amber-700">
+        <div className="mt-6 flex items-center gap-2.5 rounded-2xl bg-terracotta-tint px-5 py-3 text-sm text-terracotta-deep">
+          <span className="h-2 w-2 rounded-full bg-terracotta animate-pulse-ring" />
           A stop was voted out — reshaping the day…
         </div>
       )}
       {note && !replanning && (
-        <div className="mt-6 rounded-2xl bg-stone-100 px-5 py-3 text-sm text-stone-700">
+        <div className="mt-6 flex items-center gap-2.5 rounded-2xl bg-ink px-5 py-3 text-sm text-paper">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-sage" />
           {note}
         </div>
       )}
@@ -222,19 +224,19 @@ export default function LobbyRoom({
           const id = stop.place.id;
           const mine = myVote(id);
           return (
-            <li key={id} className="rounded-2xl border border-stone-200 p-4">
+            <li key={id} className="rounded-2xl border border-hairline bg-surface p-4">
               <div className="flex gap-4">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-stone-900 text-xs font-semibold text-white">
-                  {i + 1}
+                <span className="flex h-7 w-7 shrink-0 -rotate-45 items-center justify-center rounded-[999px_999px_999px_3px] bg-ink">
+                  <span className="rotate-45 text-xs font-bold text-paper">{i + 1}</span>
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="truncate font-medium">{stop.place.name}</span>
-                    <span className="shrink-0 text-sm tabular-nums text-stone-400">
+                    <span className="truncate font-semibold text-ink">{stop.place.name}</span>
+                    <span className="shrink-0 text-sm tabular-nums text-faint">
                       {stop.arrivalTime}
                     </span>
                   </div>
-                  <p className="mt-0.5 text-sm text-stone-500">
+                  <p className="mt-0.5 text-sm text-muted">
                     {stop.place.place_types.join(" · ")}
                   </p>
 
@@ -243,8 +245,8 @@ export default function LobbyRoom({
                       onClick={() => castVote(id, "up")}
                       className={`rounded-full border px-3 py-1 text-sm transition ${
                         mine === "up"
-                          ? "border-green-500 bg-green-50 text-green-700"
-                          : "border-stone-200 hover:bg-stone-50"
+                          ? "border-sage bg-sage-tint text-sage-deep"
+                          : "border-hairline hover:bg-paper"
                       }`}
                     >
                       ▲ {tally(id, "up")}
@@ -253,8 +255,8 @@ export default function LobbyRoom({
                       onClick={() => castVote(id, "down")}
                       className={`rounded-full border px-3 py-1 text-sm transition ${
                         mine === "down"
-                          ? "border-red-500 bg-red-50 text-red-700"
-                          : "border-stone-200 hover:bg-stone-50"
+                          ? "border-terracotta bg-terracotta-tint text-terracotta-deep"
+                          : "border-hairline hover:bg-paper"
                       }`}
                     >
                       ▼ {tally(id, "down")}
@@ -268,7 +270,7 @@ export default function LobbyRoom({
                           userId={v.user_id}
                           email={emailById.get(v.user_id)}
                           size={22}
-                          ring={v.vote === "up" ? "#22c55e" : "#ef4444"}
+                          ring={v.vote === "up" ? "#7C9A6B" : "#C0603C"}
                         />
                       ))}
                     </div>

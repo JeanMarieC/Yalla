@@ -1,28 +1,295 @@
 @import "tailwindcss";
 
-/* Warm Yalla design system — a calm cream canvas, warm ink, amber accent. */
-:root {
-  --background: #faf7f2; /* warm cream */
-  --foreground: #1c1917; /* warm near-black (stone-900) */
-  --accent: #d97706; /* amber-600 */
-}
+/* ===========================================================================
+   Yalla design system — "warm editorial concierge"
+   Newsreader (display serif) + Hanken Grotesk (sans). A warm paper canvas,
+   ink type, one terracotta accent, sage for live/Pulse states.
+   Imported from the Yalla.dc.html design reference.
+   =========================================================================== */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Surfaces */
+  --color-canvas: #e7e0d3; /* page background (with dot texture) */
+  --color-paper: #f2ece0; /* raised paper */
+  --color-surface: #fcfaf4; /* cards / panels */
+
+  /* Ink */
+  --color-ink: #211c15;
+  --color-ink-soft: #5e564a;
+  --color-muted: #8a8173;
+  --color-faint: #a6a18f;
+  --color-hairline: #e3dbcb;
+  --color-hairline-soft: #ede6d8;
+
+  /* Terracotta accent */
+  --color-terracotta: #c0603c;
+  --color-terracotta-deep: #a24a2c;
+  --color-terracotta-tint: #f3e2d8;
+  --color-terracotta-tint-border: #ead0c0;
+
+  /* Sage — live / Pulse */
+  --color-sage: #7c9a6b;
+  --color-sage-deep: #5e7a50;
+  --color-sage-tint: #e4ecdd;
+
+  /* Background/foreground aliases (kept for existing references) */
+  --color-background: var(--color-canvas);
+  --color-foreground: var(--color-ink);
+  --color-accent: var(--color-terracotta);
+
+  /* Fonts */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Radii */
+  --radius-xl: 0.875rem; /* 14px — inputs, small cards */
+  --radius-2xl: 1rem; /* 16px */
+  --radius-3xl: 1.5rem; /* 24px — large cards */
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(33, 28, 21, 0.05), 0 1px 3px rgba(33, 28, 21, 0.05);
+  --shadow-md: 0 4px 16px rgba(33, 28, 21, 0.07), 0 1px 4px rgba(33, 28, 21, 0.05);
+  --shadow-lg: 0 16px 44px rgba(33, 28, 21, 0.13), 0 4px 12px rgba(33, 28, 21, 0.06);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--color-canvas);
+  /* Barely-there paper grain. */
+  background-image: radial-gradient(rgba(33, 28, 21, 0.025) 1px, transparent 1px);
+  background-size: 4px 4px;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Smooth, momentum scrolling for the sliding sheets on touch devices. */
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #f3e2d8;
+  color: #7a4632;
+}
+
+/* Quiet, on-brand scrollbars for the editorial panels. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d7cdba transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #d7cdba;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* ---------------------------------------------------------------------------
+   Reusable component classes (so JSX stays readable and consistent).
+   --------------------------------------------------------------------------- */
+@layer components {
+  /* Headlines + brand voice */
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .yalla-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-terracotta-deep);
+  }
+
+  /* Surfaces */
+  .yalla-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-3xl);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    background: var(--color-terracotta);
+    color: #fcf7f0;
+    font-weight: 600;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(192, 96, 60, 0.28);
+    transition: background 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: var(--color-terracotta-deep);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.45;
+    box-shadow: none;
+    transform: none;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-weight: 600;
+    border: 1px solid #d7cdba;
+    border-radius: 999px;
+    transition: background 0.15s ease;
+    cursor: pointer;
+  }
+  .btn-ghost:hover {
+    background: var(--color-paper);
+  }
+
+  /* Inputs */
+  .yalla-input {
+    width: 100%;
+    font-family: inherit;
+    color: var(--color-ink);
+    background: #fff;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-xl);
+    padding: 0.8125rem 0.9375rem;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .yalla-input::placeholder {
+    color: var(--color-faint);
+  }
+  .yalla-input:focus {
+    border-color: var(--color-terracotta);
+    box-shadow: 0 0 0 3px rgba(192, 96, 60, 0.12);
+  }
+
+  /* Chips */
+  .yalla-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    border: 1px solid var(--color-hairline);
+    border-radius: 999px;
+    padding: 0.5rem 0.9375rem;
+    font-size: 0.875rem;
+    color: var(--color-ink);
+  }
+  .yalla-chip-key {
+    color: var(--color-muted);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .yalla-chip-accent {
+    background: var(--color-terracotta-tint);
+    border-color: var(--color-terracotta-tint-border);
+    color: var(--color-terracotta-deep);
+    font-weight: 600;
+  }
+
+  /* Map pin — teardrop: rotated square with one round corner (design signature). */
+  .yalla-pin {
+    background: var(--color-ink);
+    border-radius: 999px 999px 999px 4px;
+    transform: rotate(-45deg);
+    box-shadow: 0 8px 16px rgba(33, 28, 21, 0.32);
+  }
+  .yalla-pin-selected {
+    background: var(--color-terracotta);
+    box-shadow: 0 8px 18px rgba(192, 96, 60, 0.42);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Animations (from the design reference).
+   --------------------------------------------------------------------------- */
+@keyframes yallaPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 154, 107, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(124, 154, 107, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 154, 107, 0);
+  }
+}
+@keyframes yallaFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes yallaShimmer {
+  0% {
+    background-position: -240px 0;
+  }
+  100% {
+    background-position: 240px 0;
+  }
+}
+@keyframes yallaDrop {
+  0% {
+    transform: translateY(-10px) scale(0.9);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(2px) scale(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes yallaFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-pulse-ring {
+  animation: yallaPulse 2.2s infinite;
+}
+.animate-drop {
+  animation: yallaDrop 0.5s ease-out;
+}
+.animate-fade-up {
+  animation: yallaFadeUp 0.4s ease-out both;
+}
+.shimmer {
+  background: linear-gradient(90deg, #f0e9db 0px, #f7f2e8 80px, #f0e9db 160px);
+  background-size: 240px 100%;
+  animation: yallaShimmer 1.4s infinite linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

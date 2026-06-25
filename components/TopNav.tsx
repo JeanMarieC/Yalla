@@ -19,47 +19,40 @@ export default function TopNav() {
     router.refresh();
   }
 
+  const linkCls =
+    "rounded-full px-4 py-2 text-ink-soft transition hover:bg-paper hover:text-ink";
+
   return (
-    <nav className="flex flex-wrap items-center justify-end gap-x-1 gap-y-2 px-4 py-4 text-sm sm:px-6">
+    <nav className="flex flex-wrap items-center gap-x-1 gap-y-2 px-4 py-4 text-sm sm:px-6">
+      {/* Brand mark */}
+      <Link href="/" className="mr-auto flex items-center gap-2.5">
+        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-ink font-display text-xl leading-none text-paper">
+          y
+        </span>
+        <span className="font-display text-xl tracking-tight text-ink">Yalla</span>
+      </Link>
+
       {loading ? null : user ? (
         <>
-          <Link
-            href="/place/new"
-            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
-          >
+          <Link href="/place/new" className={linkCls}>
             Add place
           </Link>
-          <Link
-            href="/events/new"
-            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
-          >
+          <Link href="/events/new" className={linkCls}>
             Add event
           </Link>
-          <Link
-            href="/trips"
-            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
-          >
+          <Link href="/trips" className={linkCls}>
             My Trips
           </Link>
-          <button
-            onClick={logout}
-            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
-          >
+          <button onClick={logout} className={linkCls}>
             Log out
           </button>
         </>
       ) : (
         <>
-          <Link
-            href="/login"
-            className="rounded-full px-4 py-2 transition hover:bg-stone-100"
-          >
+          <Link href="/login" className={linkCls}>
             Log in
           </Link>
-          <Link
-            href="/signup"
-            className="rounded-full bg-stone-900 px-4 py-2 text-white transition hover:bg-stone-700"
-          >
+          <Link href="/signup" className="btn-primary px-4 py-2 text-sm">
             Sign up
           </Link>
         </>

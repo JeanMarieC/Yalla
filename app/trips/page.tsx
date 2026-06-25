@@ -22,16 +22,15 @@ export default async function TripsPage() {
     <div className="flex min-h-[100dvh] flex-col">
       <TopNav />
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-8">
-        <h1 className="text-3xl font-semibold tracking-tight">My Trips</h1>
+        <p className="yalla-eyebrow mb-2">Saved days</p>
+        <h1 className="font-display text-4xl font-normal tracking-tight text-ink">My Trips</h1>
 
         {!trips || trips.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-stone-200 p-10 text-center">
-            <p className="text-stone-500">No saved trips yet.</p>
-            <Link
-              href="/"
-              className="mt-4 inline-block rounded-full bg-stone-900 px-5 py-2.5 text-sm text-white transition hover:bg-stone-700"
-            >
-              Plan a day
+          <div className="mt-10 rounded-3xl border border-dashed border-[#D7CDBA] p-10 text-center">
+            <p className="font-display text-xl text-ink">No trips yet</p>
+            <p className="mt-1 text-sm text-muted">Your saved days will live here.</p>
+            <Link href="/" className="btn-primary mt-5 inline-flex px-5 py-2.5 text-sm">
+              Plan your first day
             </Link>
           </div>
         ) : (
@@ -40,10 +39,10 @@ export default async function TripsPage() {
               <li key={trip.id}>
                 <Link
                   href={`/trip/${trip.id}`}
-                  className="block rounded-2xl border border-stone-200 px-5 py-4 transition hover:bg-stone-50"
+                  className="block rounded-2xl border border-hairline bg-surface px-5 py-4 transition hover:bg-paper/60"
                 >
-                  <p className="font-medium text-stone-900">{trip.title}</p>
-                  <p className="mt-1 text-sm text-stone-500">
+                  <p className="font-display text-lg text-ink">{trip.title}</p>
+                  <p className="mt-0.5 text-sm text-muted">
                     {trip.city ? `${trip.city} · ` : ""}
                     {new Date(trip.created_at).toLocaleDateString()}
                   </p>

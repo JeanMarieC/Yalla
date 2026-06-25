@@ -11,7 +11,7 @@ import type { MapPoint } from "@/components/Map";
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
-  loading: () => <div className="h-full w-full bg-stone-100" />,
+  loading: () => <div className="h-full w-full bg-canvas" />,
 });
 
 interface DestinationFinderProps {
@@ -60,18 +60,19 @@ export default function DestinationFinder({ brief, onPick }: DestinationFinderPr
   );
 
   if (loading) {
-    return <p className="mt-4 text-sm text-stone-500">Finding where to go…</p>;
+    return <p className="mt-4 text-sm text-muted">Finding where to go…</p>;
   }
   if (error) {
-    return <p className="mt-4 text-sm text-red-500">{error}</p>;
+    return <p className="mt-4 text-sm text-terracotta-deep">{error}</p>;
   }
   if (!destinations || destinations.length === 0) {
-    return <p className="mt-4 text-sm text-stone-500">No destinations matched.</p>;
+    return <p className="mt-4 text-sm text-muted">No destinations matched.</p>;
   }
 
   return (
-    <div className="mt-4">
-      <div className="h-56 overflow-hidden rounded-2xl border border-stone-200">
+    <div className="mt-5">
+      <div className="mb-1.5 yalla-eyebrow">Where we&apos;d send you</div>
+      <div className="h-56 overflow-hidden rounded-2xl border border-hairline">
         <Map
           points={points}
           selectedIndex={selected}
@@ -86,33 +87,44 @@ export default function DestinationFinder({ brief, onPick }: DestinationFinderPr
           <li
             key={d.id}
             className={`rounded-2xl border p-4 transition ${
-              i === selected ? "border-stone-400 bg-stone-50" : "border-stone-200"
+              i === selected
+                ? "border-terracotta-tint-border bg-terracotta-tint/50"
+                : "border-hairline bg-surface"
             }`}
             onMouseEnter={() => setSelected(i)}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-medium">
-                  <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-stone-900 text-xs text-white">
-                    {i + 1}
+                <p className="flex items-center gap-2">
+                  <span className="inline-flex h-6 w-6 -rotate-45 items-center justify-center rounded-[999px_999px_999px_3px] bg-ink">
+                    <span className="rotate-45 text-[11px] font-bold text-paper">{i + 1}</span>
                   </span>
-                  {d.name}
-                  <span className="text-stone-400"> · {d.country}</span>
+                  <span className="font-display text-xl text-ink">{d.name}</span>
+                  <span className="text-sm text-muted">· {d.country}</span>
                 </p>
-                <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
+                <p className="mt-1.5 font-display text-[14.5px] italic leading-relaxed text-ink-soft">
                   {d.description}
                 </p>
-                <p className="mt-1.5 text-xs text-stone-400">{d.tags.join(" · ")}</p>
+                <p className="mt-2 flex flex-wrap gap-1.5">
+                  {d.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full bg-paper px-2.5 py-1 text-[11.5px] text-ink-soft"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </p>
               </div>
               {d.in_season && (
-                <span className="shrink-0 rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700">
-                  in season
+                <span className="shrink-0 rounded-full bg-sage-tint px-2 py-1 text-[10.5px] font-bold uppercase tracking-wide text-sage-deep">
+                  In season
                 </span>
               )}
             </div>
             <button
               onClick={() => onPick(d.name)}
-              className="mt-3 rounded-full bg-stone-900 px-4 py-1.5 text-sm text-white transition hover:bg-stone-700"
+              className="btn-primary mt-3 px-4 py-1.5 text-sm"
             >
               Plan days here →
             </button>
