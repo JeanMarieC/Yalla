@@ -11,28 +11,34 @@ config({ path: ".env.local" });
 import { embed } from "../lib/ai/embed";
 import { supabaseAdmin } from "../lib/supabase";
 import { geocodeCity, fetchMapboxPOIs, type RawPOI } from "../lib/ingest/mapbox";
-import { fetchOSMOutdoors } from "../lib/ingest/osm";
+import { fetchOSMOutdoors, fetchOSMUrban } from "../lib/ingest/osm";
 import { describePOIs } from "../lib/ingest/enrich";
+import { normalizeTypes } from "../lib/ingest/normalizeTypes";
+import { parseOpeningHours } from "../lib/ingest/openingHours";
 
+// Dedupe across sources. OSM-identity wins first, then name (so a Mapbox row
+// for a place OSM already gave us — richer, with hours — is dropped). Pass the
+// rich OSM lists BEFORE Mapbox so the kept copy is the detailed one.
 function dedupe(pois: RawPOI[]): RawPOI[] {
-  const seen = new Set<string>();
+  const seenName = new Set<string>();
+  const seenOsm = new Set<string>();
   const out: RawPOI[] = [];
   for (const p of pois) {
-    const key = p.name.trim().toLowerCase();
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
+    const nameKey = p.name.trim().toLowerCase();
+    if (!nameKey) continue;
+    const osmKey = p.osmType && p.osmId != null ? `${p.osmType}/${p.osmId}` : null;
+    if (osmKey && seenOsm.has(osmKey)) continue;
+    if (seenName.has(nameKey)) continue;
+    seenName.add(nameKey);
+    if (osmKey) seenOsm.add(osmKey);
     out.push(p);
   }
   return out;
 }
 
-function uniq(arr: string[]): string[] {
-  return [...new Set(arr.map((s) => s.toLowerCase()))];
-}
-
 async function main() {
   const city = process.argv[2];
-  const cap = Number(process.argv[3] ?? 40);
+  const cap = Number(process.argv[3] ?? 60);
   if (!city) {
     console.error('Usage: npm run ingest -- "City Name" [maxPlaces]');
     process.exit(1);
@@ -43,24 +49,26 @@ async function main() {
   if (!geo) throw new Error(`Could not geocode "${city}".`);
   console.log(`  -> ${geo.center.lat.toFixed(3)}, ${geo.center.lng.toFixed(3)} (${geo.country})`);
 
-  console.log("Fetching venues (Mapbox) + outdoors (OSM)…");
-  const [urban, outdoors] = await Promise.all([
-    fetchMapboxPOIs(geo.center, 6),
+  console.log("Fetching venues (OSM + Mapbox) + outdoors (OSM)…");
+  const [osmUrban, mapboxUrban, outdoors] = await Promise.all([
+    fetchOSMUrban(geo.center, 150), // rich + multi-point sampled (hours/address/prominence)
+    fetchMapboxPOIs(geo.center, 6), // supplement (no hours)
     fetchOSMOutdoors(geo.center, 15000, 30),
   ]);
-  // Interleave so the (scarcer) outdoor layer always makes the cut, not just
-  // the first N urban venues.
-  const u = dedupe(urban);
-  const o = dedupe(outdoors);
+  // OSM first so its richer copy wins dedupe over a Mapbox duplicate.
+  const urbanAll = dedupe([...osmUrban, ...mapboxUrban]);
+  const outdoorAll = dedupe(outdoors);
+  // Interleave so the (scarcer) outdoor layer always makes the cut.
   const mixed: RawPOI[] = [];
-  for (let i = 0; i < Math.max(u.length, o.length); i++) {
-    if (u[i]) mixed.push(u[i]);
-    if (o[i]) mixed.push(o[i]);
+  for (let i = 0; i < Math.max(urbanAll.length, outdoorAll.length); i++) {
+    if (urbanAll[i]) mixed.push(urbanAll[i]);
+    if (outdoorAll[i]) mixed.push(outdoorAll[i]);
   }
   const pois = dedupe(mixed).slice(0, cap);
-  const outdoorCount = pois.filter((p) => p.placeTypes.includes("outdoors")).length;
+  const withHours = pois.filter((p) => p.rawHours).length;
   console.log(
-    `  -> ${urban.length} urban + ${outdoors.length} outdoor -> ${pois.length} kept (${outdoorCount} outdoor)`,
+    `  -> ${osmUrban.length} osm + ${mapboxUrban.length} mapbox + ${outdoors.length} outdoor` +
+      ` -> ${pois.length} kept (${withHours} with hours)`,
   );
   if (pois.length === 0) throw new Error("No POIs found for this city.");
 
@@ -83,9 +91,19 @@ async function main() {
       city,
       country: geo.country || city,
       location: `SRID=4326;POINT(${p.lng} ${p.lat})`,
-      place_types: uniq([...p.placeTypes, ...e.tags]),
+      // Canonical schedulable types first (so planDay gets right durations /
+      // time-of-day), then descriptive tags for matching. Phase 14.1.
+      place_types: normalizeTypes([...p.placeTypes, ...e.tags]),
       embedding,
       source: "api",
+      // Phase 14.2 — rich location facts (null where the source lacked them).
+      address: p.address ?? null,
+      neighborhood: p.neighborhood ?? null,
+      raw_opening_hours: p.rawHours ?? null,
+      opening_hours: parseOpeningHours(p.rawHours), // jsonb; null = unknown
+      prominence: p.prominence ?? 0,
+      osm_type: p.osmType ?? null,
+      osm_id: p.osmId ?? null,
     });
     if (error) {
       console.warn(`  ! skip ${p.name}: ${error.message}`);

@@ -10,6 +10,14 @@ export interface RawPOI {
   lng: number;
   category: string;
   placeTypes: string[];
+  // Phase 14.2 — rich facts. OSM supplies these; Mapbox usually leaves them
+  // undefined (so those rows keep "unknown" hours and zero prominence).
+  osmType?: "node" | "way" | "relation";
+  osmId?: number;
+  rawHours?: string; // original OSM opening_hours string
+  address?: string;
+  neighborhood?: string;
+  prominence?: number; // 0..1 free quality proxy
 }
 
 function token(): string {

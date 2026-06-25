@@ -9,6 +9,7 @@
 import type { RankedPlace } from "../places";
 import { getTravelMatrix, type LatLng, type TravelProfile } from "../routing";
 import { generateWhyItFits } from "./whyItFits";
+import { isOpenAt, type DayKey } from "../ingest/openingHours";
 
 export interface PlanDayOptions {
   /** The original vibe, so the why-it-fits lines can reference its feeling. */
@@ -24,6 +25,12 @@ export interface PlanDayOptions {
   profile?: TravelProfile;
   /** Hard cap on stops considered before fitting. Defaults to 8. */
   maxStops?: number;
+  /**
+   * Day of week the plan is for. When set, stops that would be CLOSED at their
+   * scheduled arrival are dropped and the day re-times around them. Places with
+   * unknown hours are kept (lenient). Omit to skip opening-hours filtering.
+   */
+  day?: DayKey;
 }
 
 /** One stop in the finished, timed day. Plain data — no behavior. */
@@ -123,14 +130,32 @@ export async function planDay(
   const indexOf = new Map<string, number>();
   candidates.forEach((p, k) => indexOf.set(p.id, k + 1)); // +1: start is 0
 
-  // SELF-CORRECTION LOOP (real logic): order + schedule the current set; if it
-  // runs past the budget, drop the lowest-ranked stop and try again. This is
-  // what keeps the day realistic instead of cramming everything in.
+  // SELF-CORRECTION LOOP (real logic): order + schedule the current set, then
+  //   (1) drop any stop that would be CLOSED at its arrival time (Phase 14.4),
+  //   (2) if the day still runs past the budget, drop the lowest-ranked stop,
+  // and recompute. This is what keeps the day realistic — only open places, and
+  // no cramming. The guard bounds the worst case since `working` only shrinks.
   let working = [...candidates]; // sorted by score desc
   let scheduled: ScheduledStop[] = [];
-  while (working.length > 0) {
+  let guard = 0;
+  while (working.length > 0 && guard++ < 60) {
     const ordered = orderStops(working, matrix, indexOf);
     const result = buildSchedule(ordered, matrix, indexOf, startMin);
+
+    if (options.day) {
+      const closedIds = new Set(
+        result.stops
+          .filter(
+            (s) => !isOpenAt(s.place.opening_hours ?? null, options.day!, formatHM(s.arrivalMin)),
+          )
+          .map((s) => s.place.id),
+      );
+      if (closedIds.size > 0) {
+        working = working.filter((p) => !closedIds.has(p.id));
+        continue; // re-time without the closed stops
+      }
+    }
+
     if (result.endMin <= endMin) {
       scheduled = result.stops;
       break;

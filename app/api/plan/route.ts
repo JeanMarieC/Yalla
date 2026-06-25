@@ -6,6 +6,17 @@
 import { NextResponse } from "next/server";
 import { matchPlacesToVibe, type RankedPlace } from "@/lib/places";
 import { planDay } from "@/lib/ai/planDay";
+import type { DayKey } from "@/lib/ingest/openingHours";
+
+const DAY_KEYS: DayKey[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+// Resolve the day of week the plan is for. Accepts an ISO date in the request;
+// falls back to today so the open-hours filter is always meaningful.
+function resolveDay(dateInput: unknown): DayKey {
+  const d = typeof dateInput === "string" && dateInput ? new Date(dateInput) : new Date();
+  const idx = Number.isNaN(d.getTime()) ? new Date().getDay() : d.getDay();
+  return DAY_KEYS[idx];
+}
 
 // Force the Node runtime (not Edge) — we use the Supabase + Gemini SDKs.
 export const runtime = "nodejs";
@@ -41,6 +52,7 @@ export async function POST(request: Request) {
       start,
       startTime,
       budgetHours: timeBudget,
+      day: resolveDay(body.date), // drop places closed that day
     });
 
     return NextResponse.json({ itinerary });

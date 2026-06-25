@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
 import { embed } from "@/lib/ai/embed";
+import { normalizeTypes } from "@/lib/ingest/normalizeTypes";
 
 export const runtime = "nodejs";
 
@@ -24,9 +25,11 @@ export async function POST(request: Request) {
   const country = String(body.country ?? "").trim() || city;
   const lat = Number(body.lat);
   const lng = Number(body.lng);
-  const placeTypes = Array.isArray(body.place_types)
-    ? body.place_types.map((t: unknown) => String(t).trim()).filter(Boolean)
-    : [];
+  const placeTypes = normalizeTypes(
+    Array.isArray(body.place_types)
+      ? body.place_types.map((t: unknown) => String(t).trim()).filter(Boolean)
+      : [],
+  );
 
   if (!name || !description || !city) {
     return NextResponse.json({ error: "Name, description and city are required." }, { status: 400 });

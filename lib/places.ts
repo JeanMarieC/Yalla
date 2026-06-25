@@ -10,6 +10,7 @@ import { embed } from "./ai/embed";
 import { interpretVibe, type VibeProfile } from "./ai/interpretVibe";
 import { supabaseAdmin } from "./supabase";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { WeeklyHours } from "./ingest/openingHours";
 
 /** A place ranked by how well it matches a vibe (1 = perfect, ~0 = unrelated). */
 export interface VibeMatch {
@@ -143,10 +144,14 @@ export interface RankedPlace {
   lat: number;
   /** Raw cosine similarity to the vibe (0..1). */
   similarity: number;
-  /** Final rank after the gentle place-type boost (>= similarity). */
+  /** Final rank after the gentle place-type + prominence boosts (>= similarity). */
   score: number;
   /** Present only when searching by lat/lng radius. */
   distanceMeters?: number;
+  /** Normalized weekly opening hours, or null/undefined if unknown. Phase 14. */
+  opening_hours?: WeeklyHours | null;
+  /** Free quality proxy 0..1 (Wikidata/Wikipedia/tourism signals). Phase 14. */
+  prominence?: number;
 }
 
 /**
@@ -197,7 +202,11 @@ export async function matchPlacesToVibe(
     typeof location.lat === "number" && typeof location.lng === "number";
 
   // 3. Retrieve nearest-by-vibe, scoped to a radius or a city.
-  type Row = VibeMatch & { distance_meters?: number };
+  type Row = VibeMatch & {
+    distance_meters?: number;
+    opening_hours?: WeeklyHours | null;
+    prominence?: number;
+  };
   let rows: Row[];
   if (hasGeo) {
     const { data, error } = await client.rpc("match_places_near", {
@@ -227,12 +236,15 @@ export async function matchPlacesToVibe(
     rows = (data ?? []) as Row[];
   }
 
-  // 4. Gently boost places whose categories match the requested placeTypes,
-  //    then sort by the boosted score. The boost is small so it only breaks
-  //    near-ties — semantic similarity stays in charge.
+  // 4. Gently boost places whose categories match the requested placeTypes AND
+  //    that carry a quality signal (prominence), then sort by the boosted score.
+  //    Both boosts are small so they only break near-ties — semantic similarity
+  //    stays in charge.
   const ranked: RankedPlace[] = rows.map((r) => {
     const overlap = countTypeOverlap(profile.placeTypes, r.place_types);
-    const score = r.similarity + Math.min(overlap, 3) * 0.02;
+    const prominence = typeof r.prominence === "number" ? r.prominence : 0;
+    const score =
+      r.similarity + Math.min(overlap, 3) * 0.02 + prominence * 0.05;
     return {
       id: r.id,
       name: r.name,
@@ -244,6 +256,8 @@ export async function matchPlacesToVibe(
       lat: r.lat,
       similarity: r.similarity,
       score,
+      opening_hours: r.opening_hours ?? null,
+      prominence,
       ...(typeof r.distance_meters === "number"
         ? { distanceMeters: r.distance_meters }
         : {}),
